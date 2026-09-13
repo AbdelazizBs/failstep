@@ -287,4 +287,4 @@ Do not print a Python traceback on user errors. Tracebacks are exit 3 only.
 - Never "might", "perhaps", "95%", "critical!!!"
 - Never blame the user. Blame the step.
 
-This is how we look more serious than agent-debug's essay, and more useful than a Langfuse screenshot.
+Keep the voice short. Data first, then the patch.

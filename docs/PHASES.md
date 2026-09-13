@@ -9,7 +9,7 @@ How a report must look: `docs/OUTPUT.md`.
 
 ## Phase 0 — Research and lock (done)
 
-Delivered: product, positioning, stack, architecture, trace format, decisions, testing, output, this file. Name: **failstep**. Git remote: `https://github.com/AbdelazizBs/failstep.git`.
+Delivered: product, stack, architecture, trace format, decisions, testing, output, this file. Name: **failstep**. Git remote: `https://github.com/AbdelazizBs/failstep.git`.
 
 ---
 

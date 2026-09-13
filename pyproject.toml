@@ -51,6 +51,22 @@ failstep = "failstep.cli:app"
 [tool.hatch.build.targets.wheel]
 packages = ["src/failstep"]
 
+# Wheel is the package only. Sdist is the public source tree.
+# Local venvs, recordings, and private dumps stay out even if present on disk.
+[tool.hatch.build.targets.sdist]
+only-include = [
+  "src/failstep",
+  "tests",
+  "examples",
+  "docs",
+  ".github",
+  "README.md",
+  "LICENSE",
+  "CHANGELOG.md",
+  "CONTRIBUTING.md",
+  "pyproject.toml",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]

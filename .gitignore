@@ -2,6 +2,9 @@
 .venv/
 venv/
 env/
+.pypi-venv/
+.release-venv/
+.*-venv/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -56,9 +59,20 @@ desktop.ini
 # Local leftovers — never publish
 MOVED.md
 _chatgpt_share*
+failstep-testing-handoff.md
+.release-notes.md
 *.tmp
 *.temp
 ~$*
+
+# Personal traces, recordings, screenshots — never publish
+local/
+private/
+media/
+.vhs*/
+*.cast
+*.mp4
+*.webm
 
 # Jupyter
 .ipynb_checkpoints/

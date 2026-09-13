@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Drop competitor comparison docs. Product docs describe failstep only.
+- Ignore local venvs, recordings, and private traces so they stay off git and PyPI.
+
 ## 0.1.0
 
 - `inspect`, `diagnose`, `compare`, `fix`, `version`

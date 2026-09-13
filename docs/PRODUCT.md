@@ -2,32 +2,25 @@
 
 Name: **failstep**
 Command: `failstep`
-PyPI: `failstep` (404 on 2026-09-13 — available)
-Requires: Python 3.11+, `pip install failstep` (uv optional)
+PyPI: `failstep`
+Requires: Python 3.11+, `pip install failstep`
 GitHub: [AbdelazizBs/failstep](https://github.com/AbdelazizBs/failstep)
 
 Tagline:
 
-> A local linter for one failed agent run.
+> A local CLI that diagnoses why one AI agent run failed.
 
 ## The job
 
-A developer has a JSON/JSONL dump of an agent execution. The HTTP status was 200. The answer is wrong, the tool looped, or the call was malformed.
+A developer has a JSON or JSONL dump of one agent run. The HTTP status was 200. The answer is still wrong, a tool looped, or a call was malformed.
 
-They do not want:
-
-- another Langfuse tab
-- a 15-class LLM report with 95% confidence
-- a research toolkit with recover/rerun/UI
-- a hook that blocks Claude Code while they type
-
-They want:
+They run:
 
 ```text
 failstep diagnose trace.json
 ```
 
-and, in under a second, on their laptop, with no key:
+and, in under a second, on their laptop, with no API key, they get:
 
 1. What failed
 2. Which step
@@ -36,75 +29,41 @@ and, in under a second, on their laptop, with no key:
 
 That is the whole product for V1.
 
-## The + (what nobody else ships as one small CLI)
+## What V1 is
 
-Five properties, together. Lookalikes have one or two. Not all five.
-
-### 1. Static analysis of a run file
-
-Like ruff, for traces.
-
-Input is a file that already exists. We do not wrap the agent. We do not install hooks. We do not stand up a collector.
-
-`agentlint` lints **coding-agent actions in real time**.
-`failstep` lints **a finished agent run**.
-
-### 2. Detectors are the engine. LLM is optional leftover.
-
-Schema mismatch, retry loop, tool error, timeout, malformed JSON are **code**. They run with `--no-llm` as the default path, not a fallback. Leftover LLM is opt-in (`FAILSTEP_LLM_URL`) and cannot overwrite those findings.
-
-`agent-debug` sends the trace to a model and prints `confidence 95%`.
-We never do that.
-
-### 3. Proof contract
-
-Every printed number was counted in the file.
-
-Allowed: `extra_tool_calls: 3`, `duration_ms: 14820`, `tokens_in: 4200` if the field exists.
-
-Forbidden: confidence scores, dollar savings, health grades, "32% token reduction".
-
-If the file cannot support a claim: `Insufficient evidence.`
-
-`whyfail` already owns this honesty for **Python exceptions**. We apply the same contract to **agent traces**. Different input. Same refusal to guess.
-
-### 4. One root cause
-
-Not a taxonomy dump. One primary finding. Secondary issues listed under it.
-
-Ranking is deterministic: severity, then detector order. No model votes.
-
-### 5. CI is a first-class user
-
-```text
-failstep diagnose trace.json --format json --fail-on error
-```
+- A local CLI. One finished run file in. A diagnosis out.
+- Deterministic detectors on the default path. No API key required.
+- Optional leftover (`FS000`) only when `FAILSTEP_LLM_URL` is set and no error finding exists.
+- Proof from the file. No confidence scores, dollar savings, or health grades.
+- One root cause. Secondary issues listed under it.
+- CI exit codes that stay stable.
 
 | Exit | Meaning |
 |---|---|
 | 0 | nothing at the fail threshold |
 | 1 | finding at or above threshold |
-| 2 | invalid / unreadable input |
+| 2 | invalid or unreadable input |
 | 3 | internal error |
 
-JSON field names are a contract. Tests freeze them. A silent "healthy" on garbage input is a bug.
+Garbage input never prints healthy. JSON field names are a contract. Tests freeze them.
 
-## What we will be accused of (and the answer in the README)
+## What V1 is not
 
-| Comment | Our answer, built in |
-|---|---|
-| "This is Langfuse." | No server, no DB, no UI. File in, report out. |
-| "This is agent-debug." | Their default path is an LLM. Ours is detectors. We print no confidence. |
-| "This is agentdebugx." | They recover, rerun, and serve a UI. We diagnose one file. |
-| "This is agentlint." | They block coding-agent tool calls. We read a trace after the run. |
-| "This is whyfail." | They explain Python KeyError from live frames. We explain tool/retry/schema from a dump. |
-| "This is AgentInspect." | They are TypeScript inspect trees. We are a Python diagnosis CLI. |
-| "Needs OpenAI." | `failstep diagnose` works with no provider. Tests prove it. |
-| "Can't parse my dump." | Native schema is V1. OpenAI messages, LangChain `intermediate_steps`, and exported OTEL GenAI JSON sniff. Unknown shape = exit 2 with a pointer to TRACE_FORMAT.md. Never pretend success. |
-| "Fake metrics." | No confidence field on the Finding model. |
-| "Windows mojibake." | ASCII-safe terminal. No required emoji. |
-| "Secrets leaked to GPT." | Default path never leaves the machine. LLM path redacts first. |
-| "Empty project." | Golden traces + detector tests ship with the CLI. |
+- A dashboard, database, or hosted service
+- A capture SDK or a live wrapper around the agent
+- An eval suite over a dataset
+- A hook that blocks coding-agent tools while someone types
+- A recover, rerun, or self-heal toolkit
+
+## Proof contract
+
+Every printed number was counted in the file.
+
+Allowed: `extra_tool_calls: 3`, `duration_ms: 14820`, `tokens_in: 4200` if the field exists.
+
+Forbidden: confidence scores, dollar savings, health grades, invented percentages.
+
+If the file cannot support a claim: `Insufficient evidence.`
 
 ## V1 commands
 

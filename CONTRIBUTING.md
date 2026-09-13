@@ -31,6 +31,12 @@ Trace contract: `docs/TRACE_FORMAT.md`.
 Report contract: `docs/OUTPUT.md`.
 Test contract: `docs/TESTING.md`.
 
+## Local data
+
+Do not commit virtualenvs, recordings, or personal traces. Put those in `local/`, `media/`, or a `*-venv/` directory. They are gitignored and excluded from the sdist.
+
+Redact secrets (`sk-`, `Bearer`, customer emails) before pasting a dump into an issue.
+
 ## Release
 
 Version lives in `pyproject.toml` and `src/failstep/__init__.py`. Keep them equal. Add a `CHANGELOG.md` entry.
