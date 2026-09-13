@@ -4,12 +4,30 @@ A local CLI that diagnoses **why one AI agent run failed**.
 
 Not a dashboard. Not an eval suite. Not a coding-agent linter. Not an LLM wrapper.
 
+Python 3.11+. No API key. No network. A root cause, quoted evidence, and what to change.
+
 ```text
+pip install failstep
+failstep version
+failstep diagnose TRACE.json
+```
+
+`TRACE.json` is a finished run you already have. The wheel does not ship example files.
+
+If an older version is already installed:
+
+```text
+pip install -U failstep
+```
+
+To try the bundled retry dump:
+
+```text
+git clone https://github.com/AbdelazizBs/failstep.git
+cd failstep
 pip install failstep
 failstep diagnose examples/traces/retry-loop.json
 ```
-
-No API key. No network. A root cause, quoted evidence, and what to change.
 
 Repo: [github.com/AbdelazizBs/failstep](https://github.com/AbdelazizBs/failstep)
 
@@ -19,7 +37,7 @@ Repo: [github.com/AbdelazizBs/failstep](https://github.com/AbdelazizBs/failstep)
 
 ## 60 seconds
 
-From a clone (Python 3.11+):
+From a clone, for contributors (Python 3.11+):
 
 ```text
 pip install -e ".[dev]"
@@ -27,7 +45,7 @@ python -m failstep diagnose examples/traces/retry-loop.json
 ```
 
 ```text
-failstep 0.1.1
+failstep 0.1.2
 file         examples/traces/retry-loop.json
 run          checkout-agent
 status       failed
@@ -97,6 +115,8 @@ If you use uv: `uv sync --extra dev` then `uv run pytest` / `uv run ruff check .
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Locked decisions |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, tests, pull requests |
 | [CHANGELOG.md](CHANGELOG.md) | Shipped versions |
+
+Unknown shape exits `2`. Open an issue with the command, exit code, and redacted stdout. Do not paste API keys.
 
 ## License
 

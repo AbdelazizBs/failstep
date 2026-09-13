@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.2
+
+- README install path is PyPI-first: `pip install failstep`, then diagnose a local `TRACE.json`. Example files need a clone. `-U` is only if an older version is already installed.
+
 ## 0.1.1
 
 - Drop competitor comparison docs. Product docs describe failstep only.

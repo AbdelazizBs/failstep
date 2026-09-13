@@ -1,4 +1,4 @@
-## failstep 0.1.1
+## failstep 0.1.2
 `tests/traces/retrieval-silent.json` · run `retrieval-silent` · success · 400 ms · 3 steps
 
 ### Root cause
