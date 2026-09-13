@@ -44,13 +44,13 @@ CLI: Typer. Terminal: Rich. Models: Pydantic v2. Tests: pytest. Lint: ruff.
 
 V1 runtime deps: typer, rich, pydantic. See STACK.md.
 
-Doors we keep, deps we do not take yet: OTEL-as-JSON, `failstep[llm]` + httpx in Phase 4, `python -m failstep`.
+Doors we keep: `python -m failstep`. Runtime deps stay typer, rich, pydantic. httpx is `failstep[llm]` only.
 
 Not Python 3.12-only: too many conda/company images still on 3.11, and we would lose them for no feature.
 
 ## LLM
 
-Detectors first. LLM leftover only, Phase 4, never default, never hardcoded OpenAI, never raw log upload.
+Detectors first. LLM leftover is Phase 4, shipped, opt-in via `FAILSTEP_LLM_URL`. Never default. Never hardcoded OpenAI. Never raw log upload. `failstep[llm]` adds httpx. Secrets (`sk-`, `Bearer`) are redacted before the request. `--no-redact` warns and still redacts. Leftover findings are `FS000`, `source=llm`, severity warning. They cannot replace FS001–FS005.
 
 ## V1 commands
 
@@ -92,4 +92,4 @@ https://github.com/AbdelazizBs/failstep.git
 
 ## Next
 
-Phase 3 is done. Exported OTEL JSON only. Freeze. Phase 4 is optional LLM leftover, not started.
+Phase 4 is done. Leftover LLM is opt-in. Freeze. Phase 5 is RAG detectors, not started.

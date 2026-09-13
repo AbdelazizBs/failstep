@@ -31,7 +31,7 @@ trace.json / trace.jsonl / otel.json
 
 ## Layout
 
-Phase 3 (shipped). `adapters.py` maps OpenAI, LangChain, and exported OTEL GenAI JSON into native steps.
+Phase 4 (shipped). `adapters.py` maps OpenAI, LangChain, and exported OTEL GenAI JSON. `redact.py` strips secrets. `llm.py` posts a summary only when `FAILSTEP_LLM_URL` is set and no error finding exists.
 
 ```text
 src/failstep/
@@ -46,6 +46,8 @@ src/failstep/
     evidence.py
     diagnose.py
     report.py
+    redact.py
+    llm.py
     detectors/
         __init__.py
         malformed.py
@@ -61,8 +63,6 @@ pyproject.toml
 README.md
 LICENSE
 ```
-
-Later, not created yet: `redact.py`, `llm.py`.
 
 No providers package. No FastAPI.
 

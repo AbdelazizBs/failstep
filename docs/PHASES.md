@@ -64,17 +64,29 @@ python -m failstep diagnose tests/traces/otel-http-only.json
 
 Retry dump → FS004, no FS005. Tool error dump → FS003. HTTP-only dump → exit 2.
 
-Freeze. Do not start Phase 4 until someone says go.
-
 ---
 
-## Phase 4 — Optional LLM leftover
+## Phase 4 — Optional LLM leftover (done)
 
-Only if no detector produced `error`.
+Only if no detector produced `error`. Opt-in: `FAILSTEP_LLM_URL`. Default path never networks. `--no-llm` skips. `--no-redact` warns; secrets are still stripped.
 
-Fake HTTP in tests. Redaction test must fail if `sk-` / `Bearer` leaves the machine. `--no-llm` still skips. `Finding.source = llm`.
+Fake HTTP in tests. Redaction test fails if `sk-` / `Bearer` is in the POST body. `Finding.source = llm`. Id `FS000`. Does not overwrite FS001–FS005.
 
-No hardcoded OpenAI. No raw file upload.
+No hardcoded OpenAI. No raw file upload. Extra: `failstep[llm]` (httpx).
+
+Gate (green, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m failstep diagnose tests/traces/leftover-secret.json
+python -m failstep diagnose tests/traces/leftover-secret.json --no-llm
+python -m failstep diagnose examples/traces/retry-loop.json
+```
+
+Without `FAILSTEP_LLM_URL`, leftover dump stays silent. Retry dump stays FS004.
+
+Freeze. Do not start Phase 5 until someone says go.
 
 ---
 

@@ -51,7 +51,7 @@ Input is a file that already exists. We do not wrap the agent. We do not install
 
 ### 2. Detectors are the engine. LLM is optional leftover.
 
-Schema mismatch, retry loop, tool error, timeout, malformed JSON are **code**. They run with `--no-llm` as the default path, not a fallback.
+Schema mismatch, retry loop, tool error, timeout, malformed JSON are **code**. They run with `--no-llm` as the default path, not a fallback. Leftover LLM is opt-in (`FAILSTEP_LLM_URL`) and cannot overwrite those findings.
 
 `agent-debug` sends the trace to a model and prints `confidence 95%`.
 We never do that.
@@ -110,7 +110,7 @@ JSON field names are a contract. Tests freeze them. A silent "healthy" on garbag
 
 ```text
 failstep inspect TRACE
-failstep diagnose TRACE [--format terminal|json|markdown] [--no-llm] [--fail-on error|warning]
+failstep diagnose TRACE [--format terminal|json|markdown] [--no-llm] [--no-redact] [--fail-on error|warning]
 failstep version
 ```
 
@@ -125,8 +125,9 @@ Not in V1: `explain`, `compare`, `fix`, `serve`, `init`, capture SDK.
 | FS003 | ToolFailure | exception, HTTP 4xx/5xx, empty error payload |
 | FS004 | RetryLoop | same tool + same args, 3+ times, no meaningful change |
 | FS005 | Timeout | step/run over threshold, or one step dominates duration |
+| FS000 | leftover | opt-in only: no error finding, `FAILSTEP_LLM_URL` set, warning |
 
-Root cause = first `error` in that ID order, else first `warning`.
+Root cause = first `error` in that ID order, else first `warning`. FS000 cannot replace FS001–FS005.
 
 ## Success
 

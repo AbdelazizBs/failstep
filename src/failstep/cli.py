@@ -135,12 +135,22 @@ def diagnose(
         "--no-llm",
         help="Skip LLM leftover (default path never calls a model).",
     ),
+    no_redact: bool = typer.Option(
+        False,
+        "--no-redact",
+        help="Warn; secrets are still redacted before leftover requests.",
+    ),
 ) -> None:
     """Print a root cause from deterministic detectors."""
-    del no_llm
+    if no_redact:
+        sys.stderr.write(
+            "Secrets are still redacted before any leftover request.\n"
+        )
     run = _load(trace, output_format)
     try:
-        report = diagnose_run(run, _display_path(trace))
+        report = diagnose_run(
+            run, _display_path(trace), no_llm=no_llm
+        )
     except Exception:
         _emit_internal(output_format)
     _write_diagnose(report, output_format)

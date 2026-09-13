@@ -19,13 +19,15 @@ If a PR cannot name which of those it protects, it is not ready.
 ```text
 examples/traces/          product demos (README)
 tests/
-  traces/                 hard fixtures (openai, langchain, jsonl, traps, otel)
+  traces/                 hard fixtures (openai, langchain, jsonl, traps, otel, leftover)
   test_parser.py
   test_inspect.py
   test_cli_exit.py
   test_diagnose.py
   test_sniff.py
   test_otel.py
+  test_llm.py
+  test_redact.py
   test_honesty.py
   test_detectors/
   goldens/
@@ -144,9 +146,14 @@ python -m failstep diagnose examples/traces/otel-retry-loop.json
 
 OTLP JSON (`resourceSpans`) and Python `{spans: [...]}` map into `Run`. `otel-retry-loop.json` is FS004, not FS005. `otel-tool-error.json` is FS003. HTTP-only dumps stay unknown shape (exit 2). If the mapping drops a tool error, that is a failed test, not a "known limit" in the README.
 
-### Phase 4
+### Phase 4 (done)
 
-LLM tests use a fake HTTP endpoint (stdlib `http.server` or a tiny fixture). No real API key in CI. Redaction test: a fixture with `sk-` / `Bearer` must not appear in the payload the fake server received.
+```text
+python -m pytest
+python -m failstep diagnose tests/traces/leftover-secret.json
+```
+
+LLM tests use a fake HTTP server. No real API key in CI. `tests/traces/leftover-secret.json` contains `sk-test-example` and `Bearer secret-token`; those strings must not appear in the POST body. `--no-llm` skips. An error finding skips leftover. Invented step indexes drop the leftover finding.
 
 ### Phase 8
 

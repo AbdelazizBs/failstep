@@ -61,14 +61,14 @@ python -m failstep version
 
 ```text
 failstep inspect TRACE [--format terminal|json|markdown]
-failstep diagnose TRACE [--format terminal|json|markdown] [--fail-on error|warning] [--no-llm]
+failstep diagnose TRACE [--format terminal|json|markdown] [--fail-on error|warning] [--no-llm] [--no-redact]
 failstep version
 ```
 
 Native JSON and JSONL. Also OpenAI `messages` + `tool_calls`, LangChain `intermediate_steps`, and exported OpenTelemetry GenAI JSON (`resourceSpans` or `{spans: [...]}`). Contract: [docs/TRACE_FORMAT.md](docs/TRACE_FORMAT.md).
 How the report must look: [docs/OUTPUT.md](docs/OUTPUT.md).
 
-Detectors: FS001 malformed output, FS002 tool schema, FS003 tool failure, FS004 retry loop, FS005 timeout.
+Detectors: FS001 malformed output, FS002 tool schema, FS003 tool failure, FS004 retry loop, FS005 timeout. Optional leftover (`FS000`) only if `FAILSTEP_LLM_URL` is set, httpx is installed (`pip install failstep[llm]`), and no error finding exists. `--no-llm` skips it. Secrets are redacted before the request.
 
 ## Tests
 

@@ -18,3 +18,9 @@ def runner() -> CliRunner:
 @pytest.fixture
 def repo_root() -> Path:
     return ROOT
+
+
+@pytest.fixture(autouse=True)
+def _clear_llm_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("FAILSTEP_LLM_URL", raising=False)
+    monkeypatch.delenv("FAILSTEP_LLM_TOKEN", raising=False)

@@ -77,7 +77,7 @@ We can add extras. We cannot add a database and still claim we are a linter.
 
 ```text
 failstep          # diagnose, no network
-failstep[llm]     # Phase 4: httpx + user endpoint
+failstep[llm]     # leftover: httpx + FAILSTEP_LLM_URL
 ```
 
 No `failstep[otel-sdk]`. Exported JSON is enough.
@@ -103,7 +103,7 @@ No Docker. No cloud account.
 
 - Zero config file for V1
 - One positional path
-- Flags: `--format`, `--fail-on`, `--no-llm`
+- Flags: `--format`, `--fail-on`, `--no-llm`, `--no-redact`
 - Garbage input: exit 2, point at `docs/TRACE_FORMAT.md`
 - ASCII-safe terminal (this machine is Windows)
 - JSON field names frozen by tests

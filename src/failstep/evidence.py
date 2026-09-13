@@ -5,7 +5,7 @@ from typing import Any
 
 from failstep.models import EvidenceItem, Finding, Severity, Source, Step
 
-DETECTOR_ORDER = ("FS001", "FS002", "FS003", "FS004", "FS005")
+DETECTOR_ORDER = ("FS001", "FS002", "FS003", "FS004", "FS005", "FS000")
 
 
 def canonical(value: Any) -> str:
