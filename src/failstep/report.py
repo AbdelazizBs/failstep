@@ -4,7 +4,8 @@ import json
 from typing import Any
 
 from failstep.errors import ParseError
-from failstep.models import Run, Step
+from failstep.evidence import format_step_range
+from failstep.models import Finding, Report, Run, Step
 
 LABEL_W = 12
 STEP_W = 4
@@ -12,22 +13,11 @@ TYPE_W = 9
 NAME_W = 16
 LATENCY_W = 7
 ERROR_W = 40
+EVIDENCE_WRAP = 88
 
 
 def format_inspect_terminal(run: Run, file_display: str, version: str) -> str:
-    lines = [
-        f"failstep {version}",
-        _label("file", file_display),
-        _label("run", run.id),
-        _label("status", run.status.value),
-    ]
-    if run.duration_ms is not None:
-        lines.append(_label("duration", f"{run.duration_ms} ms"))
-    lines.append(_label("steps", str(len(run.steps))))
-    if run.tokens_in is not None or run.tokens_out is not None:
-        tin = _num(run.tokens_in)
-        tout = _num(run.tokens_out)
-        lines.append(_label("tokens", f"{tin} in / {tout} out"))
+    lines = _run_header(run, file_display, version, include_tokens=True)
     lines.append("")
     lines.append(
         f"{'step':>{STEP_W}}  "
@@ -77,6 +67,128 @@ def format_inspect_json(run: Run, file_display: str, version: str) -> str:
     return json.dumps(payload, indent=2, ensure_ascii=True) + "\n"
 
 
+def format_diagnose_terminal(report: Report, version: str) -> str:
+    run = report.run
+    lines = _run_header(run, report.file, version, include_tokens=False)
+    lines.append("")
+    root = report.root_cause
+    lines.append("root cause")
+    if root is None:
+        lines.append("  none")
+        lines.append("")
+        lines.append("evidence")
+        lines.append("  none")
+        lines.append("")
+        lines.append("recommendation")
+        lines.append("  none")
+        lines.append("")
+        lines.append("secondary")
+        lines.append("  none")
+        return "\n".join(lines) + "\n"
+
+    lines.append(f"  {root.id}  {root.title}")
+    step_line = f"  steps  {format_step_range(root)}"
+    tool = _evidence_value(root, "tool")
+    if tool:
+        step_line += f"  {tool}"
+    lines.append(step_line)
+    lines.append("")
+    lines.append("evidence")
+    if root.evidence:
+        width = max(len(_evidence_label(item.key)) for item in root.evidence)
+        for item in root.evidence:
+            label = _evidence_label(item.key)
+            value = _render_value(item.value)
+            lines.append(f"  {label:<{width}}  {value}")
+    else:
+        lines.append("  none")
+    lines.append("")
+    lines.append("recommendation")
+    rec = root.recommendation or "Insufficient evidence."
+    for wrapped in _wrap(rec, EVIDENCE_WRAP - 2):
+        lines.append(f"  {wrapped}")
+    lines.append("")
+    lines.append("secondary")
+    if report.secondary:
+        for item in report.secondary:
+            extra = format_step_range(item)
+            name = _evidence_value(item, "tool")
+            suffix = f"steps {extra}"
+            if name:
+                suffix += f", {name}"
+            lines.append(f"  {item.id}  {item.title}  ({suffix})")
+    else:
+        lines.append("  none")
+    return "\n".join(lines) + "\n"
+
+
+def format_diagnose_json(report: Report, version: str) -> str:
+    root = report.root_cause
+    payload = {
+        "schema_version": 1,
+        "tool": "failstep",
+        "tool_version": version,
+        "file": report.file,
+        "run": _run_summary(report.run),
+        "root_cause": _finding_json(root) if root else None,
+        "secondary": [_finding_json(item) for item in report.secondary],
+        "findings": [_finding_json(item) for item in report.findings],
+    }
+    return json.dumps(payload, indent=2, ensure_ascii=True) + "\n"
+
+
+def format_diagnose_markdown(report: Report, version: str) -> str:
+    run = report.run
+    bits = [f"`{report.file}`", f"run `{run.id}`", run.status.value]
+    if run.duration_ms is not None:
+        bits.append(f"{run.duration_ms} ms")
+    bits.append(f"{len(run.steps)} steps")
+    lines = [f"## failstep {version}", " · ".join(bits), ""]
+    root = report.root_cause
+    lines.append("### Root cause")
+    if root is None:
+        lines.append("_none_")
+        lines.append("")
+        lines.append("### Secondary")
+        lines.append("_none_")
+        return "\n".join(lines) + "\n"
+    tool = _evidence_value(root, "tool")
+    where = format_step_range(root)
+    title = f"**{root.id} {root.title}**"
+    if tool:
+        title += f" on `{tool}`"
+    if where:
+        title += f" (steps {where})"
+    lines.append(title)
+    lines.append("")
+    if root.evidence:
+        lines.append("| evidence | |")
+        lines.append("|---|---|")
+        for item in root.evidence:
+            value = _render_value(item.value)
+            if item.key == "args" or isinstance(item.value, (dict, list)):
+                value = f"`{_render_value(item.value)}`"
+            lines.append(f"| {_evidence_label(item.key)} | {value} |")
+        lines.append("")
+    lines.append(f"**Fix:** {root.recommendation}")
+    lines.append("")
+    lines.append("### Secondary")
+    if report.secondary:
+        for item in report.secondary:
+            extra = format_step_range(item)
+            name = _evidence_value(item, "tool")
+            bit = f"- **{item.id} {item.title}**"
+            if extra:
+                bit += f" (steps {extra}"
+                if name:
+                    bit += f", {name}"
+                bit += ")"
+            lines.append(bit)
+    else:
+        lines.append("_none_")
+    return "\n".join(lines) + "\n"
+
+
 def format_error_terminal(error: ParseError) -> str:
     return error.message + "\n"
 
@@ -95,20 +207,64 @@ def format_error_json(error: ParseError, version: str) -> str:
     return json.dumps(payload, indent=2, ensure_ascii=True) + "\n"
 
 
-def format_phase1_diagnose(file_display: str, version: str, output_format: str) -> str:
-    message = "No detectors shipped yet. Use inspect, or wait for Phase 2."
-    if output_format == "json":
-        payload = {
-            "schema_version": 1,
-            "tool": "failstep",
-            "tool_version": version,
-            "file": file_display,
-            "message": message,
-        }
-        return json.dumps(payload, indent=2, ensure_ascii=True) + "\n"
-    if output_format == "markdown":
-        return f"## failstep {version}\n`{file_display}`\n\n{message}\n"
-    return message + "\n"
+def format_internal_terminal() -> str:
+    return "Internal error.\n"
+
+
+def format_internal_json(version: str) -> str:
+    payload = {
+        "schema_version": 1,
+        "tool": "failstep",
+        "tool_version": version,
+        "error": {"code": "internal", "message": "Internal error."},
+    }
+    return json.dumps(payload, indent=2, ensure_ascii=True) + "\n"
+
+
+def _run_header(
+    run: Run, file_display: str, version: str, *, include_tokens: bool
+) -> list[str]:
+    lines = [
+        f"failstep {version}",
+        _label("file", file_display),
+        _label("run", run.id),
+        _label("status", run.status.value),
+    ]
+    if run.duration_ms is not None:
+        lines.append(_label("duration", f"{run.duration_ms} ms"))
+    lines.append(_label("steps", str(len(run.steps))))
+    if include_tokens and (run.tokens_in is not None or run.tokens_out is not None):
+        tin = _num(run.tokens_in)
+        tout = _num(run.tokens_out)
+        lines.append(_label("tokens", f"{tin} in / {tout} out"))
+    return lines
+
+
+def _run_summary(run: Run) -> dict[str, Any]:
+    return {
+        "id": run.id,
+        "status": run.status.value,
+        "duration_ms": run.duration_ms,
+        "step_count": len(run.steps),
+        "tokens_in": run.tokens_in,
+        "tokens_out": run.tokens_out,
+    }
+
+
+def _finding_json(finding: Finding) -> dict[str, Any]:
+    return {
+        "id": finding.id,
+        "detector": finding.detector,
+        "title": finding.title,
+        "severity": finding.severity.value,
+        "step_ids": finding.step_ids,
+        "step_indexes": finding.step_indexes,
+        "evidence": [
+            {"key": item.key, "value": item.value} for item in finding.evidence
+        ],
+        "recommendation": finding.recommendation,
+        "source": finding.source.value,
+    }
 
 
 def _run_json(run: Run) -> dict[str, Any]:
@@ -181,3 +337,43 @@ def _truncate(text: str, width: int) -> str:
     if width <= 3:
         return text[:width]
     return text[: width - 3] + "..."
+
+
+def _evidence_label(key: str) -> str:
+    return key.replace("_", " ")
+
+
+def _evidence_value(finding: Finding, key: str) -> Any:
+    for item in finding.evidence:
+        if item.key == key:
+            return item.value
+    return None
+
+
+def _render_value(value: Any) -> str:
+    if isinstance(value, (dict, list)):
+        return json.dumps(value, sort_keys=True, ensure_ascii=True, default=str)
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if value is None:
+        return "null"
+    return str(value)
+
+
+def _wrap(text: str, width: int) -> list[str]:
+    if len(text) <= width:
+        return [text]
+    words = text.split()
+    lines: list[str] = []
+    current = ""
+    for word in words:
+        trial = word if not current else f"{current} {word}"
+        if len(trial) <= width:
+            current = trial
+            continue
+        if current:
+            lines.append(current)
+        current = word
+    if current:
+        lines.append(current)
+    return lines or [text]

@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "tool": "failstep",
+  "tool_version": "0.1.0",
+  "file": "examples/traces/retry-loop.json",
+  "run": {
+    "id": "checkout-agent",
+    "status": "failed",
+    "duration_ms": 14820,
+    "step_count": 8,
+    "tokens_in": 4200,
+    "tokens_out": 800
+  },
+  "root_cause": {
+    "id": "FS004",
+    "detector": "retry",
+    "title": "retry loop",
+    "severity": "error",
+    "step_ids": [
+      "step_3",
+      "step_4",
+      "step_5"
+    ],
+    "step_indexes": [
+      3,
+      5
+    ],
+    "evidence": [
+      {
+        "key": "identical calls",
+        "value": 3
+      },
+      {
+        "key": "tool",
+        "value": "search_docs"
+      },
+      {
+        "key": "args",
+        "value": {
+          "query": "refund policy"
+        }
+      },
+      {
+        "key": "outputs",
+        "value": "unchanged"
+      }
+    ],
+    "recommendation": "Cap identical tool retries at 1. Return the first error to the model.",
+    "source": "deterministic"
+  },
+  "secondary": [],
+  "findings": [
+    {
+      "id": "FS004",
+      "detector": "retry",
+      "title": "retry loop",
+      "severity": "error",
+      "step_ids": [
+        "step_3",
+        "step_4",
+        "step_5"
+      ],
+      "step_indexes": [
+        3,
+        5
+      ],
+      "evidence": [
+        {
+          "key": "identical calls",
+          "value": 3
+        },
+        {
+          "key": "tool",
+          "value": "search_docs"
+        },
+        {
+          "key": "args",
+          "value": {
+            "query": "refund policy"
+          }
+        },
+        {
+          "key": "outputs",
+          "value": "unchanged"
+        }
+      ],
+      "recommendation": "Cap identical tool retries at 1. Return the first error to the model.",
+      "source": "deterministic"
+    }
+  ]
+}

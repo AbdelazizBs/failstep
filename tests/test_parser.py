@@ -25,11 +25,9 @@ def test_parse_native_retry_loop() -> None:
     assert run.steps[0].index == 1
     assert run.steps[0].type is StepType.llm
     assert run.steps[1].name == "get_customer"
-    assert run.steps[1].error == "customer_id is required"
-    assert run.steps[1].schema_ == {
-        "required": ["customer_id"],
-        "properties": {"customer_id": {"type": "string"}},
-    }
+    assert run.steps[1].error is None
+    assert run.steps[1].input == {"customer_id": "cus_1"}
+    assert run.steps[2].name == "search_docs"
     assert run.steps[2].input == {"query": "refund policy"}
 
 

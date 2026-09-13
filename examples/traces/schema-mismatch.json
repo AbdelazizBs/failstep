@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "run_id": "checkout-agent",
+  "status": "failed",
+  "duration_ms": 900,
+  "error": null,
+  "tokens_in": 200,
+  "tokens_out": 40,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "llm",
+      "name": "plan",
+      "output": "Call get_customer.",
+      "latency_ms": 100
+    },
+    {
+      "id": "step_2",
+      "type": "tool",
+      "name": "get_customer",
+      "input": {"email": "aziz@example.com"},
+      "output": null,
+      "error": "customer_id is required",
+      "latency_ms": 120,
+      "schema": {
+        "required": ["customer_id"],
+        "properties": {
+          "customer_id": {"type": "string"}
+        }
+      }
+    },
+    {
+      "id": "step_3",
+      "type": "llm",
+      "name": "answer",
+      "output": "I could not load the customer.",
+      "latency_ms": 80
+    }
+  ]
+}

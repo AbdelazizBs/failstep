@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from failstep.adapters import adapt
 from failstep.errors import ParseError
 from failstep.models import Run
 from failstep.normalize import normalize
@@ -40,7 +41,6 @@ def parse_file(path: Path) -> dict[str, Any]:
         raise ParseError(f"Invalid JSON at {shown}: {exc.msg}", shown) from exc
 
     return _coerce_payload(data, path)
-
 
 
 def _display(path: Path) -> str:
@@ -80,7 +80,7 @@ def _parse_jsonl(text: str, path: Path) -> dict[str, Any]:
     first = objects[0]
     if isinstance(first, dict) and isinstance(first.get("steps"), list):
         if len(objects) > 1:
-            raise ParseError(UNKNOWN_SHAPE, _display(path))
+            raise ParseError(UNKNOWN_SHAPE, shown)
         return _coerce_payload(first, path)
 
     header: dict[str, Any] = {}
@@ -92,7 +92,7 @@ def _parse_jsonl(text: str, path: Path) -> dict[str, Any]:
         steps = objects
 
     if not steps or not all(isinstance(item, dict) for item in steps):
-        raise ParseError(UNKNOWN_SHAPE, _display(path))
+        raise ParseError(UNKNOWN_SHAPE, shown)
 
     payload = dict(header)
     payload["steps"] = steps
@@ -106,17 +106,28 @@ def _is_run_header(obj: dict[str, Any]) -> bool:
 
 
 def _coerce_payload(data: Any, path: Path) -> dict[str, Any]:
+    shown = _display(path)
+    native = _as_native(data)
+    if native is not None:
+        return native
+    adapted = adapt(data)
+    if adapted is not None and _as_native(adapted) is not None:
+        return adapted
+    raise ParseError(UNKNOWN_SHAPE, shown)
+
+
+def _as_native(data: Any) -> dict[str, Any] | None:
     if isinstance(data, list):
         if not data or not all(isinstance(item, dict) for item in data):
-            raise ParseError(UNKNOWN_SHAPE, _display(path))
+            return None
         return {"steps": data}
 
     if not isinstance(data, dict):
-        raise ParseError(UNKNOWN_SHAPE, _display(path))
+        return None
 
     steps = data.get("steps")
     if not isinstance(steps, list):
-        raise ParseError(UNKNOWN_SHAPE, _display(path))
+        return None
     if not all(isinstance(item, dict) for item in steps):
-        raise ParseError(UNKNOWN_SHAPE, _display(path))
+        return None
     return data

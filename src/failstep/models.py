@@ -19,6 +19,17 @@ class RunStatus(StrEnum):
     unknown = "unknown"
 
 
+class Severity(StrEnum):
+    error = "error"
+    warning = "warning"
+
+
+class Source(StrEnum):
+    deterministic = "deterministic"
+    heuristic = "heuristic"
+    llm = "llm"
+
+
 class Step(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -48,3 +59,35 @@ class Run(BaseModel):
     tokens_out: int | None = None
     steps: list[Step] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class EvidenceItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    key: str
+    value: Any
+
+
+class Finding(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    detector: str
+    title: str
+    severity: Severity
+    step_ids: list[str]
+    step_indexes: list[int]
+    evidence: list[EvidenceItem] = Field(default_factory=list)
+    recommendation: str
+    source: Source = Source.deterministic
+    category: str | None = None
+
+
+class Report(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    file: str
+    run: Run
+    root_cause: Finding | None = None
+    secondary: list[Finding] = Field(default_factory=list)
+    findings: list[Finding] = Field(default_factory=list)

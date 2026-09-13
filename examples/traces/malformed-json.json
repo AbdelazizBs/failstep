@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "run_id": "checkout-agent",
+  "status": "failed",
+  "duration_ms": 400,
+  "tokens_in": 50,
+  "tokens_out": 10,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {"query": "refund"},
+      "output": "{\"hits\": 2, \"chunks\": [",
+      "error": null,
+      "latency_ms": 40
+    }
+  ]
+}

@@ -20,16 +20,10 @@
       "id": "step_2",
       "type": "tool",
       "name": "get_customer",
-      "input": {"email": "aziz@example.com"},
-      "output": null,
-      "error": "customer_id is required",
-      "latency_ms": 120,
-      "schema": {
-        "required": ["customer_id"],
-        "properties": {
-          "customer_id": {"type": "string"}
-        }
-      }
+      "input": {"customer_id": "cus_1"},
+      "output": {"email": "aziz@example.com"},
+      "error": null,
+      "latency_ms": 120
     },
     {
       "id": "step_3",
@@ -70,17 +64,11 @@
     {
       "id": "step_7",
       "type": "tool",
-      "name": "get_customer",
-      "input": {"email": "aziz@example.com"},
-      "output": null,
-      "error": "customer_id is required",
-      "latency_ms": 110,
-      "schema": {
-        "required": ["customer_id"],
-        "properties": {
-          "customer_id": {"type": "string"}
-        }
-      }
+      "name": "get_order",
+      "input": {"order_id": "ord_9"},
+      "output": {"status": "paid"},
+      "error": null,
+      "latency_ms": 90
     },
     {
       "id": "step_8",

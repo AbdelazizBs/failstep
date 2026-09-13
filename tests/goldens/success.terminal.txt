@@ -1,0 +1,18 @@
+failstep 0.1.0
+file         examples/traces/success.json
+run          checkout-agent
+status       success
+duration     2100 ms
+steps        4
+
+root cause
+  none
+
+evidence
+  none
+
+recommendation
+  none
+
+secondary
+  none

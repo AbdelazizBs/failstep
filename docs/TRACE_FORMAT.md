@@ -42,13 +42,16 @@ JSONL: one step object per line, optional first line `{ "run_id": "...", "status
 - Extra fields allowed. Unknown fields go to `metadata`.
 - Missing optional fields are null, not invented.
 
-## What sniffers may accept (Phase 2)
+## What sniffers accept
 
-1. OpenAI dump: `messages[]` with `tool_calls` / `role=tool`
-2. LangChain dump: `intermediate_steps` pairs
-3. Phase 3: OTEL GenAI span list (`gen_ai.operation.name`)
+1. Native failstep JSON / JSONL / a JSON array of steps
+2. OpenAI dump: `messages[]` with `tool_calls` / `role=tool`
+3. LangChain dump: `intermediate_steps` pairs
+4. Phase 3: OTEL GenAI span list (`gen_ai.operation.name`)
 
-Sniffers never drop errors on the floor. If a required mapping is missing, say so in inspect output.
+A `messages` array that maps to zero steps is unknown shape (exit 2).
+
+Sniffers never drop errors on the floor. Native `steps` wins if both native and OpenAI keys exist.
 
 ## Stability
 

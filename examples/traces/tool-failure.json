@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "run_id": "checkout-agent",
+  "status": "failed",
+  "duration_ms": 600,
+  "tokens_in": 80,
+  "tokens_out": 12,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "tool",
+      "name": "get_order",
+      "input": {"order_id": "ord_9"},
+      "output": {"status": 500, "error": "upstream down"},
+      "error": "HTTP 500 Internal Server Error",
+      "latency_ms": 200
+    }
+  ]
+}

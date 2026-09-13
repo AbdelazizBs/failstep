@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "run_id": "checkout-agent",
+  "status": "failed",
+  "duration_ms": 22100,
+  "tokens_in": 100,
+  "tokens_out": 20,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "llm",
+      "name": "plan",
+      "output": "Call search_docs.",
+      "latency_ms": 100
+    },
+    {
+      "id": "step_2",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {"query": "refund policy"},
+      "output": null,
+      "error": "timeout",
+      "latency_ms": 20000
+    },
+    {
+      "id": "step_3",
+      "type": "llm",
+      "name": "answer",
+      "output": "The search timed out.",
+      "latency_ms": 200
+    }
+  ]
+}

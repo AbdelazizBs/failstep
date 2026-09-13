@@ -8,30 +8,30 @@ Package and command: **failstep**. Python 3.11+, pip-installable, `python -m fai
 
 ```text
 trace.json / trace.jsonl / otel.json
-        │
-        ▼
+        |
+        v
      parser          sniff format, reject garbage (exit 2)
-        │
-        ▼
+        |
+        v
     normalize        Run + Step (Pydantic)
-        │
-        ▼
-    detectors        FS001–FS005, evidence only
-        │
-        ├── findings ──► report (one root cause + secondary)
-        │
-        └── no error finding
-                 │
-                 ▼
+        |
+        v
+    detectors        FS001-FS005, evidence only
+        |
+        +-- findings --> report (one root cause + secondary)
+        |
+        +-- no error finding
+                 |
+                 v
            optional LLM (Phase 4, if configured)
-                 │
-                 ▼
+                 |
+                 v
               report or "Insufficient evidence."
 ```
 
 ## Layout
 
-Phase 1 (shipped):
+Phase 2 (shipped):
 
 ```text
 src/failstep/
@@ -41,8 +41,18 @@ src/failstep/
     errors.py
     models.py
     parser.py
+    adapters.py
     normalize.py
+    evidence.py
+    diagnose.py
     report.py
+    detectors/
+        __init__.py
+        malformed.py
+        schema.py
+        tool_error.py
+        retry.py
+        timeout.py
 
 tests/
 examples/traces/
@@ -52,10 +62,9 @@ README.md
 LICENSE
 ```
 
-Later, not created yet: `diagnose.py`, `redact.py`, `llm.py`, `detectors/`.
+Later, not created yet: `redact.py`, `llm.py`.
 
-Phase 1 does not create a providers package or FastAPI. `report.py` is enough.
-
+No providers package. No FastAPI.
 
 ## Internal model
 
@@ -63,7 +72,7 @@ Phase 1 does not create a providers package or FastAPI. `report.py` is enough.
 Run    id, name, status, duration_ms, error, tokens_in/out, steps[]
 Step   index, id, type, name, input, output, error, latency_ms, tokens, metadata
 Finding  id (FS00x), detector, category, title, severity, step_ids,
-         evidence[], recommendation, impact (counted only),
+         evidence[], recommendation,
          source (deterministic | heuristic | llm)
 Report   run, root_cause, secondary[], findings[]
 ```
@@ -80,7 +89,9 @@ Nested OTEL spans flatten to ordered steps. Optional `parent_id` in metadata.
 4. FS004 RetryLoop
 5. FS005 Timeout
 
-Root cause = highest severity, then this order.
+Root cause = highest severity (`error` then `warning`), then this order, then first step index.
+
+FS005 thresholds: step `latency_ms >= 15000` (error), run `duration_ms >= 30000` (error), one step `>= 80%` of run and `>= 5000ms` (warning).
 
 ## Output
 

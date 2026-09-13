@@ -62,15 +62,12 @@ def test_json_format_on_bad_file(runner: CliRunner, tmp_path: Path) -> None:
     assert "Traceback" not in result.stdout
 
 
-def test_diagnose_valid_file_exit_0_no_finding(
-    runner: CliRunner, monkeypatch
-) -> None:
+def test_diagnose_finding_exit_1(runner: CliRunner, monkeypatch) -> None:
     monkeypatch.chdir(ROOT)
     result = runner.invoke(app, ["diagnose", "examples/traces/retry-loop.json"])
-    assert result.exit_code == 0
-    assert "No detectors shipped yet" in result.stdout
-    assert "FS004" not in result.stdout
-    assert "root cause" not in result.stdout.lower() or "No detectors" in result.stdout
+    assert result.exit_code == 1
+    assert "FS004" in result.stdout
+    assert "Traceback" not in result.stdout
 
 
 def test_diagnose_garbage_exit_2(runner: CliRunner, tmp_path: Path) -> None:
@@ -85,3 +82,16 @@ def test_success_inspect_exit_0(runner: CliRunner, monkeypatch) -> None:
     monkeypatch.chdir(ROOT)
     result = runner.invoke(app, ["inspect", "examples/traces/success.json"])
     assert result.exit_code == 0
+
+
+def test_internal_error_exit_3(runner: CliRunner, monkeypatch) -> None:
+    monkeypatch.chdir(ROOT)
+
+    def boom(*_args, **_kwargs):
+        raise RuntimeError("forced")
+
+    monkeypatch.setattr("failstep.cli.diagnose_run", boom)
+    result = runner.invoke(app, ["diagnose", "examples/traces/success.json"])
+    assert result.exit_code == 3
+    assert "Internal error." in result.stdout
+    assert "Traceback" not in result.stdout

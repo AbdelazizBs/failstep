@@ -7,15 +7,21 @@ from pathlib import Path
 import typer
 
 from failstep import __version__
+from failstep.diagnose import diagnose as diagnose_run
 from failstep.errors import ParseError
+from failstep.models import Report, Severity
 from failstep.parser import load_run
 from failstep.report import (
+    format_diagnose_json,
+    format_diagnose_markdown,
+    format_diagnose_terminal,
     format_error_json,
     format_error_terminal,
     format_inspect_json,
     format_inspect_markdown,
     format_inspect_terminal,
-    format_phase1_diagnose,
+    format_internal_json,
+    format_internal_terminal,
 )
 
 app = typer.Typer(
@@ -31,6 +37,11 @@ class OutputFormat(StrEnum):
     terminal = "terminal"
     json = "json"
     markdown = "markdown"
+
+
+class FailOn(StrEnum):
+    error = "error"
+    warning = "warning"
 
 
 def _display_path(path: Path) -> str:
@@ -49,6 +60,14 @@ def _emit_error(error: ParseError, output_format: OutputFormat) -> None:
     raise typer.Exit(2)
 
 
+def _emit_internal(output_format: OutputFormat) -> None:
+    if output_format is OutputFormat.json:
+        sys.stdout.write(format_internal_json(__version__))
+    else:
+        sys.stdout.write(format_internal_terminal())
+    raise typer.Exit(3)
+
+
 def _load(path: Path, output_format: OutputFormat):
     try:
         return load_run(path)
@@ -57,6 +76,25 @@ def _load(path: Path, output_format: OutputFormat):
     except OSError as exc:
         _emit_error(ParseError(str(exc), _display_path(path)), output_format)
     raise RuntimeError("unreachable")
+
+
+def _write_diagnose(report: Report, output_format: OutputFormat) -> None:
+    if output_format is OutputFormat.json:
+        sys.stdout.write(format_diagnose_json(report, __version__))
+    elif output_format is OutputFormat.markdown:
+        sys.stdout.write(format_diagnose_markdown(report, __version__))
+    else:
+        sys.stdout.write(format_diagnose_terminal(report, __version__))
+
+
+def _exit_for(report: Report, fail_on: FailOn) -> int:
+    if not report.findings:
+        return 0
+    if fail_on is FailOn.warning:
+        return 1
+    if any(item.severity is Severity.error for item in report.findings):
+        return 1
+    return 0
 
 
 @app.command()
@@ -87,19 +125,28 @@ def diagnose(
         "--format",
         help="terminal, json, or markdown.",
     ),
-    fail_on: str | None = typer.Option(
-        None,
+    fail_on: FailOn = typer.Option(
+        FailOn.error,
         "--fail-on",
-        help="Phase 2. Ignored until detectors ship.",
-        hidden=True,
+        help="Exit 1 on this severity or higher.",
+    ),
+    no_llm: bool = typer.Option(
+        False,
+        "--no-llm",
+        help="Skip LLM leftover (default path never calls a model).",
     ),
 ) -> None:
-    """Print a root cause. Detectors ship in Phase 2."""
-    del fail_on
-    _load(trace, output_format)
-    sys.stdout.write(
-        format_phase1_diagnose(_display_path(trace), __version__, output_format.value)
-    )
+    """Print a root cause from deterministic detectors."""
+    del no_llm
+    run = _load(trace, output_format)
+    try:
+        report = diagnose_run(run, _display_path(trace))
+    except Exception:
+        _emit_internal(output_format)
+    _write_diagnose(report, output_format)
+    code = _exit_for(report, fail_on)
+    if code:
+        raise typer.Exit(code)
 
 
 @app.command()

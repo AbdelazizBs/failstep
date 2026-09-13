@@ -8,10 +8,10 @@ tokens       4200 in / 800 out
 
 step  type       name              latency  error
    1  llm        plan                210ms
-   2  tool       get_customer        120ms  customer_id is required
+   2  tool       get_customer        120ms
    3  tool       search_docs          80ms
    4  tool       search_docs          80ms
    5  tool       search_docs          80ms
    6  llm        think               350ms
-   7  tool       get_customer        110ms  customer_id is required
+   7  tool       get_order            90ms
    8  llm        answer              400ms

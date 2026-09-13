@@ -1,0 +1,10 @@
+{
+  "run_id": "langchain-run",
+  "status": "failed",
+  "intermediate_steps": [
+    [{"tool": "search_docs", "tool_input": {"query": "refund policy"}}, {"hits": 0, "chunks": []}],
+    [{"tool": "search_docs", "tool_input": {"query": "refund policy"}}, {"hits": 0, "chunks": []}],
+    [{"tool": "search_docs", "tool_input": {"query": "refund policy"}}, {"hits": 0, "chunks": []}]
+  ],
+  "output": "I could not find the refund policy."
+}

@@ -13,7 +13,7 @@ No API key. No network. A root cause, quoted evidence, and what to change.
 
 Repo: [github.com/AbdelazizBs/failstep](https://github.com/AbdelazizBs/failstep)
 
-**Phase 1 is in this repo:** `inspect` works. `diagnose` parses the file and refuses to invent a finding until Phase 2 detectors ship.
+**Phase 2 is in this repo:** `inspect` prints the run. `diagnose` names the failed step.
 
 ## 60 seconds
 
@@ -21,7 +21,7 @@ From a clone (Python 3.11+):
 
 ```text
 pip install -e ".[dev]"
-python -m failstep inspect examples/traces/retry-loop.json
+python -m failstep diagnose examples/traces/retry-loop.json
 ```
 
 ```text
@@ -31,53 +31,49 @@ run          checkout-agent
 status       failed
 duration     14820 ms
 steps        8
-tokens       4200 in / 800 out
 
-step  type       name              latency  error
-   1  llm        plan                210ms
-   2  tool       get_customer        120ms  customer_id is required
-   3  tool       search_docs          80ms
-   4  tool       search_docs          80ms
-   5  tool       search_docs          80ms
-   6  llm        think               350ms
-   7  tool       get_customer        110ms  customer_id is required
-   8  llm        answer              400ms
+root cause
+  FS004  retry loop
+  steps  3-5  search_docs
+
+evidence
+  identical calls  3
+  tool             search_docs
+  args             {"query": "refund policy"}
+  outputs          unchanged
+
+recommendation
+  Cap identical tool retries at 1. Return the first error to the model.
+
+secondary
+  none
 ```
+
+Exit `1` when there is a finding (`--fail-on error`, the default). A clean run exits `0`. Garbage input exits `2`. It never prints healthy.
 
 If `failstep` is not on PATH:
 
 ```text
+python -m failstep diagnose examples/traces/retry-loop.json
 python -m failstep inspect examples/traces/retry-loop.json
 python -m failstep version
 ```
 
-`diagnose` in Phase 1:
-
-```text
-python -m failstep diagnose examples/traces/retry-loop.json
-```
-
-```text
-No detectors shipped yet. Use inspect, or wait for Phase 2.
-```
-
-Garbage input exits `2`. It never prints healthy.
-
-## Commands
-
 ```text
 failstep inspect TRACE [--format terminal|json|markdown]
-failstep diagnose TRACE [--format terminal|json|markdown]
+failstep diagnose TRACE [--format terminal|json|markdown] [--fail-on error|warning] [--no-llm]
 failstep version
 ```
 
-Native JSON and JSONL only. Contract: [docs/TRACE_FORMAT.md](docs/TRACE_FORMAT.md).
+Native JSON and JSONL. Also OpenAI `messages` + `tool_calls`, and LangChain `intermediate_steps`. Contract: [docs/TRACE_FORMAT.md](docs/TRACE_FORMAT.md).
 How the report must look: [docs/OUTPUT.md](docs/OUTPUT.md).
+
+Detectors: FS001 malformed output, FS002 tool schema, FS003 tool failure, FS004 retry loop, FS005 timeout.
 
 ## Tests
 
 ```text
-python -m pytest tests/test_parser.py tests/test_inspect.py tests/test_cli_exit.py
+python -m pytest
 python -m ruff check .
 ```
 

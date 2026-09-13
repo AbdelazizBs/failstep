@@ -191,12 +191,12 @@ tokens       4200 in / 800 out
 
 step  type       name              latency  error
    1  llm        plan                210ms
-   2  tool       get_customer        120ms  customer_id is required
+   2  tool       get_customer        120ms
    3  tool       search_docs          80ms
    4  tool       search_docs          80ms
    5  tool       search_docs          80ms
    6  llm        think               350ms
-   7  tool       get_customer        110ms  customer_id is required
+   7  tool       get_order            90ms
    8  llm        answer              400ms
 ```
 
@@ -214,7 +214,7 @@ Speak like a tool, not a chatbot.
 | empty | `File is empty: PATH` |
 | invalid JSON | `Invalid JSON at PATH: <parser error>` |
 | unknown shape | `Not a failstep trace. Expected a JSON object with a steps array. See docs/TRACE_FORMAT.md.` |
-| diagnose before Phase 2 | `No detectors shipped yet. Use inspect, or wait for Phase 2.` (valid file still exit 0) |
+| internal crash | `Internal error.` (exit 3). JSON: `{"error": {"code": "internal"}}` |
 
 Do not print a Python traceback on user errors. Tracebacks are exit 3 only.
 

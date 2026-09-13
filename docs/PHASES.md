@@ -2,8 +2,6 @@
 
 Do not skip. Do not implement the next phase until the current **gate command** is green.
 
-This file is the build order.
-
 How we test: `docs/TESTING.md`.
 How a report must look: `docs/OUTPUT.md`.
 
@@ -17,43 +15,21 @@ Delivered: product, positioning, stack, architecture, trace format, decisions, t
 
 ## Phase 1 — Scaffold that inspects a file (done)
 
-Installable CLI. Native JSON + JSONL. `inspect` prints the run. `diagnose` does not invent a finding.
+Installable CLI. Native JSON + JSONL. `inspect` prints the run.
 
-Shipped: `pyproject.toml`, `src/failstep/` (`cli`, `models`, `parser`, `normalize`, `report`), examples, pytest, ruff clean.
+---
+
+## Phase 2 — Deterministic diagnose (done)
+
+The product. Detectors FS001–FS005. `diagnose` terminal / json / markdown. `--fail-on`. Exit codes 0/1/2/3. OpenAI and LangChain sniff. Honesty tests.
 
 Gate (green, 2026-09-13):
 
 ```text
-python -m pytest tests/test_parser.py tests/test_inspect.py tests/test_cli_exit.py
+python -m pytest
 python -m ruff check .
-python -m failstep inspect examples/traces/retry-loop.json
-```
-
-`diagnose` on a valid file: "No detectors shipped yet. Use inspect, or wait for Phase 2." Exit 0. Garbage: exit 2.
-
-No LLM. No OTEL. No detectors.
-
-
----
-
-## Phase 2 — Deterministic diagnose (MVP)
-
-This is the product.
-
-1. Detectors FS001–FS005
-2. `failstep diagnose TRACE` terminal / json / markdown — **exactly** `OUTPUT.md`
-3. `--fail-on`, exit codes 0/1/2/3
-4. Golden traces + frozen reports in `tests/goldens/`
-5. Format sniff (no SDK): native, OpenAI `messages` + `tool_calls`, LangChain `intermediate_steps`. Unknown = exit 2
-6. Tests per detector: fire, silent on success, evidence strings found in the fixture
-7. Honesty test: no `confidence` key, every `step_ids` exists
-
-Gate:
-
-```text
-uv run pytest
-uv run failstep diagnose examples/traces/retry-loop.json
-uv run failstep diagnose examples/traces/retry-loop.json --format json
+python -m failstep diagnose examples/traces/retry-loop.json
+python -m failstep diagnose examples/traces/retry-loop.json --format json
 ```
 
 A stranger with no API key sees the retry, the steps, the args, and the cap-retries fix.

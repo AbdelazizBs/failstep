@@ -1,0 +1,22 @@
+failstep 0.1.0
+file         examples/traces/retry-loop.json
+run          checkout-agent
+status       failed
+duration     14820 ms
+steps        8
+
+root cause
+  FS004  retry loop
+  steps  3-5  search_docs
+
+evidence
+  identical calls  3
+  tool             search_docs
+  args             {"query": "refund policy"}
+  outputs          unchanged
+
+recommendation
+  Cap identical tool retries at 1. Return the first error to the model.
+
+secondary
+  none

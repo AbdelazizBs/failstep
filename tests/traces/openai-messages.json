@@ -1,0 +1,64 @@
+{
+  "run_id": "openai-run",
+  "status": "failed",
+  "messages": [
+    {"role": "user", "content": "What is the refund policy?"},
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_1",
+          "type": "function",
+          "function": {
+            "name": "search_docs",
+            "arguments": "{\"query\": \"refund policy\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_1",
+      "content": "{\"hits\": 0, \"chunks\": []}"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_2",
+          "type": "function",
+          "function": {
+            "name": "search_docs",
+            "arguments": "{\"query\": \"refund policy\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_2",
+      "content": "{\"hits\": 0, \"chunks\": []}"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_3",
+          "type": "function",
+          "function": {
+            "name": "search_docs",
+            "arguments": "{\"query\": \"refund policy\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_3",
+      "content": "{\"hits\": 0, \"chunks\": []}"
+    }
+  ]
+}

@@ -14,25 +14,27 @@ Three things, always:
 
 If a PR cannot name which of those it protects, it is not ready.
 
-## Layout (from Phase 1)
+## Layout
 
 ```text
 examples/traces/          human-readable goldens (shipped, used in README)
 tests/
-  traces/                 extra fixtures (weird, truncated, huge-ish)
+  traces/                 extra fixtures (openai, langchain, jsonl)
   test_parser.py
   test_inspect.py
   test_cli_exit.py
-  test_diagnose.py        Phase 2
-  test_detectors/         one file per FS00x
+  test_diagnose.py
+  test_sniff.py
+  test_honesty.py
+  test_detectors/
   goldens/
     inspect-retry-loop.terminal.txt
     inspect-retry-loop.json
-    retry-loop.terminal.txt   Phase 2 diagnose
+    retry-loop.terminal.txt
     retry-loop.json
     retry-loop.md
+    success.terminal.txt
 ```
-
 
 `examples/traces/` is the product demo. `tests/traces/` can be ugly. Do not put secrets in either.
 
@@ -83,9 +85,9 @@ Use Typer's `CliRunner`. Assert stdout **and** `exit_code`.
 Windows first. After the test suite is green:
 
 ```text
-uv run failstep inspect examples/traces/retry-loop.json
-uv run failstep diagnose examples/traces/retry-loop.json
-uv run failstep diagnose examples/traces/retry-loop.json --format json
+python -m failstep inspect examples/traces/retry-loop.json
+python -m failstep diagnose examples/traces/retry-loop.json
+python -m failstep diagnose examples/traces/retry-loop.json --format json
 ```
 
 Look at it. If a column wraps into garbage at 80 characters, the golden is wrong.
@@ -98,24 +100,16 @@ Do not start the next phase until the gate command is green.
 
 ### Phase 1 (done)
 
-```text
-python -m pytest tests/test_parser.py tests/test_inspect.py tests/test_cli_exit.py
-python -m failstep inspect examples/traces/retry-loop.json
-python -m failstep diagnose examples/traces/retry-loop.json
-```
+Installable inspect CLI.
 
-`uv run ...` is the same commands if you develop with uv.
-
-Diagnose in Phase 1 must **not** invent a finding. It says detectors are not shipped yet, exit 0 on a valid file, exit 2 on garbage.
-
-### Phase 2
+### Phase 2 (done)
 
 ```text
-uv run pytest
-uv run failstep diagnose examples/traces/retry-loop.json --format json
+python -m pytest
+python -m failstep diagnose examples/traces/retry-loop.json --format json
 ```
 
-Every FS001–FS005 golden fires the right id. `success.json` is empty findings, exit 0.
+Every FS001-FS005 example fires the right id. `success.json` is empty findings, exit 0.
 
 ### Phase 3+
 
@@ -134,9 +128,11 @@ Until then, **you** run pytest on this Windows box before every push.
 ## Commands we always run before a push
 
 ```text
-uv run ruff check .
-uv run pytest
+python -m ruff check .
+python -m pytest
 ```
+
+Same with `uv run` if that is how you installed.
 
 No coverage theater. We do not chase 100%. We chase: parser, five detectors, three report formats, four exit codes.
 
@@ -162,6 +158,6 @@ A small test walks every `Finding` in goldens:
 - no key named `confidence`
 - no `$` in recommendation unless the fixture has a cost field (it will not, in V1)
 - every `step_ids` entry exists on the `Run`
-- every evidence string is either a counted field (`retries=3`) or a substring of the fixture file
+- every evidence string is either a counted field (`identical_calls=3`) or a substring of the fixture file
 
 That last one is the proof contract, in pytest.
