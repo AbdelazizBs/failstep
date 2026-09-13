@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "run_id": "malformed-output-schema",
+  "status": "failed",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "refund"
+      },
+      "output": {
+        "hits": 2
+      },
+      "error": null,
+      "latency_ms": 20,
+      "metadata": {
+        "output_schema": {
+          "required": [
+            "hits",
+            "chunks"
+          ],
+          "properties": {
+            "hits": {
+              "type": "integer"
+            },
+            "chunks": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "duration_ms": 80
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "run_id": "timeout-missing-duration",
+  "status": "failed",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy"
+      },
+      "output": null,
+      "error": "timeout",
+      "latency_ms": null
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "run_id": "malformed-invalid",
+  "status": "failed",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "refund"
+      },
+      "output": "{\"hits\": 2, \"chunks\": [1, 2, ]}",
+      "error": null,
+      "latency_ms": 20
+    }
+  ],
+  "duration_ms": 80
+}

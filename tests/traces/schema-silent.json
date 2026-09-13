@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "run_id": "schema-silent",
+  "status": "success",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "llm",
+      "name": "plan",
+      "input": null,
+      "output": "Look up the customer.",
+      "error": null,
+      "latency_ms": 70
+    },
+    {
+      "id": "step_2",
+      "type": "tool",
+      "name": "get_customer",
+      "input": {
+        "customer": {
+          "id": "customer_12345"
+        }
+      },
+      "output": {
+        "email": "user@example.test"
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_3",
+      "type": "tool",
+      "name": "get_customer",
+      "input": {
+        "customer_id": "customer_12345"
+      },
+      "output": {
+        "email": "user@example.test"
+      },
+      "error": null,
+      "latency_ms": 40,
+      "schema": {
+        "required": [
+          "customer_id"
+        ],
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "duration_ms": 400,
+  "tokens_in": 40,
+  "tokens_out": 10
+}

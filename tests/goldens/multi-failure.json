@@ -1,0 +1,384 @@
+{
+  "schema_version": 1,
+  "tool": "failstep",
+  "tool_version": "0.1.0",
+  "file": "tests/traces/multi-failure.json",
+  "run": {
+    "id": "support-agent",
+    "status": "success",
+    "duration_ms": 18500,
+    "step_count": 25,
+    "tokens_in": 2400,
+    "tokens_out": 410
+  },
+  "root_cause": {
+    "id": "FS001",
+    "detector": "malformed",
+    "title": "malformed output",
+    "severity": "error",
+    "step_ids": [
+      "step_16"
+    ],
+    "step_indexes": [
+      16
+    ],
+    "evidence": [
+      {
+        "key": "steps",
+        "value": 1
+      },
+      {
+        "key": "reason",
+        "value": "truncated json"
+      },
+      {
+        "key": "output",
+        "value": "{\"answer\": \"refunds are"
+      },
+      {
+        "key": "tool",
+        "value": "draft"
+      }
+    ],
+    "recommendation": "Return complete JSON from the tool. Do not truncate the payload.",
+    "source": "deterministic"
+  },
+  "secondary": [
+    {
+      "id": "FS002",
+      "detector": "schema",
+      "title": "tool schema",
+      "severity": "error",
+      "step_ids": [
+        "step_3",
+        "step_4",
+        "step_6"
+      ],
+      "step_indexes": [
+        3,
+        4,
+        6
+      ],
+      "evidence": [
+        {
+          "key": "tool",
+          "value": "get_customer"
+        },
+        {
+          "key": "steps",
+          "value": 3
+        },
+        {
+          "key": "expected required",
+          "value": [
+            "customer_id"
+          ]
+        },
+        {
+          "key": "received keys",
+          "value": [
+            "email"
+          ]
+        },
+        {
+          "key": "step error",
+          "value": "customer_id is required"
+        },
+        {
+          "key": "schema required",
+          "value": [
+            "customer_id"
+          ]
+        }
+      ],
+      "recommendation": "Validate tool arguments against the schema before execution. Pass customer_id.",
+      "source": "deterministic"
+    },
+    {
+      "id": "FS003",
+      "detector": "tool_error",
+      "title": "tool failure",
+      "severity": "error",
+      "step_ids": [
+        "step_18"
+      ],
+      "step_indexes": [
+        18
+      ],
+      "evidence": [
+        {
+          "key": "tool",
+          "value": "notify_billing"
+        },
+        {
+          "key": "steps",
+          "value": 1
+        },
+        {
+          "key": "step error",
+          "value": "HTTP 500 Internal Server Error"
+        },
+        {
+          "key": "http status",
+          "value": 500
+        }
+      ],
+      "recommendation": "Handle the tool error. Do not retry the same failed call without changing arguments.",
+      "source": "deterministic"
+    },
+    {
+      "id": "FS004",
+      "detector": "retry",
+      "title": "retry loop",
+      "severity": "error",
+      "step_ids": [
+        "step_13",
+        "step_14",
+        "step_15"
+      ],
+      "step_indexes": [
+        13,
+        15
+      ],
+      "evidence": [
+        {
+          "key": "identical calls",
+          "value": 3
+        },
+        {
+          "key": "tool",
+          "value": "search_docs"
+        },
+        {
+          "key": "args",
+          "value": {
+            "query": "refund policy"
+          }
+        },
+        {
+          "key": "outputs",
+          "value": "unchanged"
+        }
+      ],
+      "recommendation": "Cap identical tool retries at 1. Return the first error to the model.",
+      "source": "deterministic"
+    },
+    {
+      "id": "FS005",
+      "detector": "timeout",
+      "title": "timeout",
+      "severity": "error",
+      "step_ids": [
+        "step_8"
+      ],
+      "step_indexes": [
+        8
+      ],
+      "evidence": [
+        {
+          "key": "reason",
+          "value": "step over threshold"
+        },
+        {
+          "key": "step",
+          "value": "search_crm"
+        },
+        {
+          "key": "latency_ms",
+          "value": 16000
+        },
+        {
+          "key": "run_duration_ms",
+          "value": 18500
+        }
+      ],
+      "recommendation": "Bound the step with a timeout. Stop waiting after the limit.",
+      "source": "deterministic"
+    }
+  ],
+  "findings": [
+    {
+      "id": "FS001",
+      "detector": "malformed",
+      "title": "malformed output",
+      "severity": "error",
+      "step_ids": [
+        "step_16"
+      ],
+      "step_indexes": [
+        16
+      ],
+      "evidence": [
+        {
+          "key": "steps",
+          "value": 1
+        },
+        {
+          "key": "reason",
+          "value": "truncated json"
+        },
+        {
+          "key": "output",
+          "value": "{\"answer\": \"refunds are"
+        },
+        {
+          "key": "tool",
+          "value": "draft"
+        }
+      ],
+      "recommendation": "Return complete JSON from the tool. Do not truncate the payload.",
+      "source": "deterministic"
+    },
+    {
+      "id": "FS002",
+      "detector": "schema",
+      "title": "tool schema",
+      "severity": "error",
+      "step_ids": [
+        "step_3",
+        "step_4",
+        "step_6"
+      ],
+      "step_indexes": [
+        3,
+        4,
+        6
+      ],
+      "evidence": [
+        {
+          "key": "tool",
+          "value": "get_customer"
+        },
+        {
+          "key": "steps",
+          "value": 3
+        },
+        {
+          "key": "expected required",
+          "value": [
+            "customer_id"
+          ]
+        },
+        {
+          "key": "received keys",
+          "value": [
+            "email"
+          ]
+        },
+        {
+          "key": "step error",
+          "value": "customer_id is required"
+        },
+        {
+          "key": "schema required",
+          "value": [
+            "customer_id"
+          ]
+        }
+      ],
+      "recommendation": "Validate tool arguments against the schema before execution. Pass customer_id.",
+      "source": "deterministic"
+    },
+    {
+      "id": "FS003",
+      "detector": "tool_error",
+      "title": "tool failure",
+      "severity": "error",
+      "step_ids": [
+        "step_18"
+      ],
+      "step_indexes": [
+        18
+      ],
+      "evidence": [
+        {
+          "key": "tool",
+          "value": "notify_billing"
+        },
+        {
+          "key": "steps",
+          "value": 1
+        },
+        {
+          "key": "step error",
+          "value": "HTTP 500 Internal Server Error"
+        },
+        {
+          "key": "http status",
+          "value": 500
+        }
+      ],
+      "recommendation": "Handle the tool error. Do not retry the same failed call without changing arguments.",
+      "source": "deterministic"
+    },
+    {
+      "id": "FS004",
+      "detector": "retry",
+      "title": "retry loop",
+      "severity": "error",
+      "step_ids": [
+        "step_13",
+        "step_14",
+        "step_15"
+      ],
+      "step_indexes": [
+        13,
+        15
+      ],
+      "evidence": [
+        {
+          "key": "identical calls",
+          "value": 3
+        },
+        {
+          "key": "tool",
+          "value": "search_docs"
+        },
+        {
+          "key": "args",
+          "value": {
+            "query": "refund policy"
+          }
+        },
+        {
+          "key": "outputs",
+          "value": "unchanged"
+        }
+      ],
+      "recommendation": "Cap identical tool retries at 1. Return the first error to the model.",
+      "source": "deterministic"
+    },
+    {
+      "id": "FS005",
+      "detector": "timeout",
+      "title": "timeout",
+      "severity": "error",
+      "step_ids": [
+        "step_8"
+      ],
+      "step_indexes": [
+        8
+      ],
+      "evidence": [
+        {
+          "key": "reason",
+          "value": "step over threshold"
+        },
+        {
+          "key": "step",
+          "value": "search_crm"
+        },
+        {
+          "key": "latency_ms",
+          "value": 16000
+        },
+        {
+          "key": "run_duration_ms",
+          "value": 18500
+        }
+      ],
+      "recommendation": "Bound the step with a timeout. Stop waiting after the limit.",
+      "source": "deterministic"
+    }
+  ]
+}

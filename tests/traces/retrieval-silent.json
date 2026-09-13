@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "run_id": "retrieval-silent",
+  "status": "success",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "retrieval",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy"
+      },
+      "output": {
+        "hits": 0,
+        "chunks": []
+      },
+      "error": null,
+      "latency_ms": 30
+    },
+    {
+      "id": "step_2",
+      "type": "retrieval",
+      "name": "search_docs",
+      "input": {
+        "query": "returns"
+      },
+      "output": {
+        "hits": 3,
+        "chunks": [
+          {
+            "source": "help://refund",
+            "text": "30 days"
+          },
+          {
+            "source": "help://refund",
+            "text": "30 days"
+          },
+          {
+            "source": "help://shipping",
+            "text": "5 days"
+          }
+        ]
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_3",
+      "type": "llm",
+      "name": "answer",
+      "input": null,
+      "output": "Refunds are allowed within 30 days.",
+      "error": null,
+      "latency_ms": 90
+    }
+  ],
+  "duration_ms": 400,
+  "tokens_in": 60,
+  "tokens_out": 20
+}

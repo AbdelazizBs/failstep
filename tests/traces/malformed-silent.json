@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "run_id": "malformed-silent",
+  "status": "success",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "llm",
+      "name": "answer",
+      "input": null,
+      "output": "The refund window is 30 days.",
+      "error": null,
+      "latency_ms": 80
+    },
+    {
+      "id": "step_2",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "refund"
+      },
+      "output": "Here is json: {\"hits\": 1, \"chunks\": [\"30 days\"]}",
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_3",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "returns"
+      },
+      "output": {
+        "hits": 1,
+        "chunks": [
+          "30 days"
+        ]
+      },
+      "error": null,
+      "latency_ms": 40,
+      "metadata": {
+        "output_schema": {
+          "required": [
+            "hits",
+            "chunks"
+          ],
+          "properties": {
+            "hits": {
+              "type": "integer"
+            },
+            "chunks": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "step_4",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "warranty"
+      },
+      "output": {
+        "hits": "1",
+        "chunks": [
+          "30 days"
+        ]
+      },
+      "error": null,
+      "latency_ms": 40,
+      "metadata": {
+        "output_schema": {
+          "required": [
+            "hits",
+            "chunks"
+          ]
+        }
+      }
+    }
+  ],
+  "duration_ms": 400
+}

@@ -17,9 +17,9 @@ If a PR cannot name which of those it protects, it is not ready.
 ## Layout
 
 ```text
-examples/traces/          human-readable goldens (shipped, used in README)
+examples/traces/          product demos (README)
 tests/
-  traces/                 extra fixtures (openai, langchain, jsonl)
+  traces/                 hard fixtures (openai, langchain, jsonl, traps)
   test_parser.py
   test_inspect.py
   test_cli_exit.py
@@ -34,9 +34,26 @@ tests/
     retry-loop.json
     retry-loop.md
     success.terminal.txt
+    multi-failure.terminal.txt
+    multi-failure.json
+    multi-failure.md
+    timeout-missing-duration.json
 ```
 
 `examples/traces/` is the product demo. `tests/traces/` can be ugly. Do not put secrets in either.
+
+Locked detector IDs:
+
+```text
+Detector | Fires on | Silent on | False-positive protection | Evidence required
+FS001    | truncated/invalid JSON, missing output fields | success, prose, JSON in a sentence, wrong output types when keys exist | does not parse prose as JSON | reason, output sample from the step
+FS002    | missing/extra/wrong-type/null required args, validation error text | no schema and no error text, valid args | does not invent required keys | expected required / received keys from the step
+FS003    | HTTP 4xx/5xx, empty error payload | schema errors, timeout text, success | recovered run still names the failed step | step error / http status copied
+FS004    | 3+ consecutive identical tool+args | 2 repeats, changed args, LLM between repeats | does not collapse similar queries | identical calls counted, args copied
+FS005    | step >=15000ms, timeout text, run >=30000ms, 80% dominate warning | healthy latencies | missing duration stays null, multiple timeouts keep the slowest | latency_ms / run_duration_ms from the file
+```
+
+Phase 5 owns empty retrieval and duplicate chunks. Those fixtures must stay silent today.
 
 ## Layers
 
@@ -111,9 +128,11 @@ python -m failstep diagnose examples/traces/retry-loop.json --format json
 
 Every FS001-FS005 example fires the right id. `success.json` is empty findings, exit 0.
 
-### Phase 3+
+Trap fixtures in `tests/traces/` (schema-traps, retry-silent, multi-failure, timeout-missing-duration, retrieval-silent) are green. Keep them green.
 
-New adapter = new fixture in `tests/traces/` plus a diagnose golden. If OTEL mapping drops a tool error, that is a failed test, not a "known limit" in the README.
+### Phase 3
+
+OTEL JSON ingest. New fixture in `tests/traces/` plus a diagnose golden. If the mapping drops a tool error, that is a failed test, not a "known limit" in the README.
 
 ### Phase 4
 

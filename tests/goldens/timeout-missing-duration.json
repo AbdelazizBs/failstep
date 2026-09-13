@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "tool": "failstep",
+  "tool_version": "0.1.0",
+  "file": "tests/traces/timeout-missing-duration.json",
+  "run": {
+    "id": "timeout-missing-duration",
+    "status": "failed",
+    "duration_ms": null,
+    "step_count": 1,
+    "tokens_in": null,
+    "tokens_out": null
+  },
+  "root_cause": {
+    "id": "FS005",
+    "detector": "timeout",
+    "title": "timeout",
+    "severity": "error",
+    "step_ids": [
+      "step_1"
+    ],
+    "step_indexes": [
+      1
+    ],
+    "evidence": [
+      {
+        "key": "reason",
+        "value": "step over threshold"
+      },
+      {
+        "key": "step",
+        "value": "search_docs"
+      },
+      {
+        "key": "latency_ms",
+        "value": null
+      }
+    ],
+    "recommendation": "Bound the step with a timeout. Stop waiting after the limit.",
+    "source": "deterministic"
+  },
+  "secondary": [],
+  "findings": [
+    {
+      "id": "FS005",
+      "detector": "timeout",
+      "title": "timeout",
+      "severity": "error",
+      "step_ids": [
+        "step_1"
+      ],
+      "step_indexes": [
+        1
+      ],
+      "evidence": [
+        {
+          "key": "reason",
+          "value": "step over threshold"
+        },
+        {
+          "key": "step",
+          "value": "search_docs"
+        },
+        {
+          "key": "latency_ms",
+          "value": null
+        }
+      ],
+      "recommendation": "Bound the step with a timeout. Stop waiting after the limit.",
+      "source": "deterministic"
+    }
+  ]
+}

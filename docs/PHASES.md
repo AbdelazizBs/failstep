@@ -34,7 +34,15 @@ python -m failstep diagnose examples/traces/retry-loop.json --format json
 
 A stranger with no API key sees the retry, the steps, the args, and the cap-retries fix.
 
-Freeze. Do not start Phase 3 until someone other than you has run diagnose on a real dump.
+Test corpus gate (green, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m failstep diagnose tests/traces/multi-failure.json
+```
+
+81 tests. Trap fixtures fire, stay silent, and do not invent evidence. `multi-failure.json` lights FS001–FS005 without mixing step ids.
 
 ---
 

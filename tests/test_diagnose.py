@@ -92,3 +92,68 @@ def test_root_cause_order() -> None:
     assert report.root_cause is not None
     assert report.root_cause.id == "FS004"
     assert report.findings[0].id == "FS004"
+
+
+def test_diagnose_multi_failure_goldens(runner: CliRunner, monkeypatch) -> None:
+    monkeypatch.chdir(ROOT)
+    term = runner.invoke(app, ["diagnose", "tests/traces/multi-failure.json"])
+    assert term.exit_code == 1
+    expected_term = (GOLDENS / "multi-failure.terminal.txt").read_text(encoding="utf-8")
+    assert _strip_eol(term.stdout) == _strip_eol(expected_term)
+    assert "FS001" in term.stdout
+    assert "confidence" not in term.stdout
+    assert "$" not in term.stdout
+
+    js = runner.invoke(
+        app, ["diagnose", "tests/traces/multi-failure.json", "--format", "json"]
+    )
+    assert js.exit_code == 1
+    payload = json.loads(js.stdout)
+    expected = json.loads((GOLDENS / "multi-failure.json").read_text(encoding="utf-8"))
+    assert payload == expected
+    assert payload["root_cause"]["id"] == "FS001"
+    assert [item["id"] for item in payload["findings"]] == [
+        "FS001",
+        "FS002",
+        "FS003",
+        "FS004",
+        "FS005",
+    ]
+
+    md = runner.invoke(
+        app, ["diagnose", "tests/traces/multi-failure.json", "--format", "markdown"]
+    )
+    assert md.exit_code == 1
+    expected_md = (GOLDENS / "multi-failure.md").read_text(encoding="utf-8")
+    assert _strip_eol(md.stdout) == _strip_eol(expected_md)
+
+
+def test_fail_on_warning_dominate(runner: CliRunner, monkeypatch) -> None:
+    monkeypatch.chdir(ROOT)
+    default = runner.invoke(app, ["diagnose", "tests/traces/timeout-dominate.json"])
+    assert default.exit_code == 0
+    assert "FS005" in default.stdout
+    warn = runner.invoke(
+        app, ["diagnose", "tests/traces/timeout-dominate.json", "--fail-on", "warning"]
+    )
+    assert warn.exit_code == 1
+
+
+def test_timeout_missing_duration_golden(runner: CliRunner, monkeypatch) -> None:
+    monkeypatch.chdir(ROOT)
+    result = runner.invoke(
+        app,
+        ["diagnose", "tests/traces/timeout-missing-duration.json", "--format", "json"],
+    )
+    assert result.exit_code == 1
+    payload = json.loads(result.stdout)
+    expected = json.loads(
+        (GOLDENS / "timeout-missing-duration.json").read_text(encoding="utf-8")
+    )
+    assert payload == expected
+    evidence = {
+        item["key"]: item["value"] for item in payload["root_cause"]["evidence"]
+    }
+    assert evidence["latency_ms"] is None
+    assert "run_duration_ms" not in evidence
+    assert payload["run"]["duration_ms"] is None

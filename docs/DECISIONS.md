@@ -90,4 +90,4 @@ https://github.com/AbdelazizBs/failstep.git
 
 ## Next
 
-Phase 2 is done. Freeze. Phase 3 is OTEL JSON ingest, after a real dump has been run through `diagnose`.
+Phase 2 is done. Trap corpus is green (81 tests). Phase 3 is OTEL JSON ingest.

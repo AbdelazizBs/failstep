@@ -84,6 +84,26 @@ def test_success_inspect_exit_0(runner: CliRunner, monkeypatch) -> None:
     assert result.exit_code == 0
 
 
+def test_healthy_busy_diagnose_exit_0(runner: CliRunner, monkeypatch) -> None:
+    monkeypatch.chdir(ROOT)
+    result = runner.invoke(app, ["diagnose", "tests/traces/healthy-busy.json"])
+    assert result.exit_code == 0
+    assert "root cause" in result.stdout
+    assert "  none" in result.stdout
+    assert "All good" not in result.stdout
+
+
+def test_diagnose_json_on_bad_file(runner: CliRunner, tmp_path: Path) -> None:
+    path = tmp_path / "nope.json"
+    path.write_text("[]", encoding="utf-8")
+    result = runner.invoke(app, ["diagnose", str(path), "--format", "json"])
+    assert result.exit_code == 2
+    payload = json.loads(result.stdout)
+    assert payload["error"]["code"] == "invalid_input"
+    assert "Traceback" not in result.stdout
+    assert "confidence" not in payload
+
+
 def test_internal_error_exit_3(runner: CliRunner, monkeypatch) -> None:
     monkeypatch.chdir(ROOT)
 

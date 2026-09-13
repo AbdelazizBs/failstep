@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "run_id": "tool-http-recovered",
+  "status": "success",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "llm",
+      "name": "plan",
+      "input": null,
+      "output": "Hit the APIs.",
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_2",
+      "type": "tool",
+      "name": "get_order",
+      "input": {
+        "order_id": "ord_9"
+      },
+      "output": {
+        "status": 400,
+        "error": "bad request"
+      },
+      "error": "HTTP 400 Bad Request",
+      "latency_ms": 30
+    },
+    {
+      "id": "step_3",
+      "type": "tool",
+      "name": "get_order",
+      "input": {
+        "order_id": "missing"
+      },
+      "output": {
+        "status": 404,
+        "error": "not found"
+      },
+      "error": "HTTP 404 Not Found",
+      "latency_ms": 30
+    },
+    {
+      "id": "step_4",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "refund"
+      },
+      "output": {
+        "status": 429,
+        "error": "rate limited"
+      },
+      "error": "HTTP 429 Too Many Requests",
+      "latency_ms": 30
+    },
+    {
+      "id": "step_5",
+      "type": "tool",
+      "name": "notify_billing",
+      "input": {
+        "order_id": "ord_9"
+      },
+      "output": {
+        "status": 500,
+        "error": "upstream down"
+      },
+      "error": "HTTP 500 Internal Server Error",
+      "latency_ms": 40
+    },
+    {
+      "id": "step_6",
+      "type": "tool",
+      "name": "notify_email",
+      "input": {
+        "order_id": "ord_9"
+      },
+      "output": {
+        "ok": true
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_7",
+      "type": "llm",
+      "name": "answer",
+      "input": null,
+      "output": "Emailed the customer.",
+      "error": null,
+      "latency_ms": 80
+    }
+  ],
+  "duration_ms": 900,
+  "tokens_in": 70,
+  "tokens_out": 15
+}

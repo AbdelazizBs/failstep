@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "timeout-multiple",
+  "status": "failed",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "a"
+      },
+      "output": null,
+      "error": "timeout",
+      "latency_ms": 16000
+    },
+    {
+      "id": "step_2",
+      "type": "tool",
+      "name": "get_order",
+      "input": {
+        "order_id": "ord_9"
+      },
+      "output": null,
+      "error": "timeout",
+      "latency_ms": 19000
+    }
+  ],
+  "duration_ms": 36000
+}

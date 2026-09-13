@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "run_id": "retrieval-then-fail",
+  "status": "failed",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "retrieval",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy"
+      },
+      "output": {
+        "hits": 1,
+        "chunks": [
+          {
+            "source": "help://refund",
+            "text": "30 days"
+          }
+        ]
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_2",
+      "type": "tool",
+      "name": "notify_billing",
+      "input": {
+        "order_id": "ord_9"
+      },
+      "output": {
+        "status": 500,
+        "error": "upstream down"
+      },
+      "error": "HTTP 500 Internal Server Error",
+      "latency_ms": 80
+    },
+    {
+      "id": "step_3",
+      "type": "llm",
+      "name": "answer",
+      "input": null,
+      "output": "I could not notify billing.",
+      "error": null,
+      "latency_ms": 70
+    }
+  ],
+  "duration_ms": 500
+}

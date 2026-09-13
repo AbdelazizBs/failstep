@@ -1,0 +1,20 @@
+failstep 0.1.0
+file         tests/traces/timeout-missing-duration.json
+run          timeout-missing-duration
+status       failed
+steps        1
+
+root cause
+  FS005  timeout
+  steps  1
+
+evidence
+  reason      step over threshold
+  step        search_docs
+  latency ms  null
+
+recommendation
+  Bound the step with a timeout. Stop waiting after the limit.
+
+secondary
+  none

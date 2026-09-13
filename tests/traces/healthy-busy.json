@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "run_id": "healthy-busy",
+  "status": "success",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "llm",
+      "name": "plan",
+      "input": null,
+      "output": "Handle the ticket.",
+      "error": null,
+      "latency_ms": 80
+    },
+    {
+      "id": "step_2",
+      "type": "llm",
+      "name": "think_2",
+      "input": {
+        "note": "pass 2"
+      },
+      "output": "Continue path 2.",
+      "error": null,
+      "latency_ms": 42
+    },
+    {
+      "id": "step_3",
+      "type": "llm",
+      "name": "think_3",
+      "input": {
+        "note": "pass 3"
+      },
+      "output": "Continue path 3.",
+      "error": null,
+      "latency_ms": 43
+    },
+    {
+      "id": "step_4",
+      "type": "llm",
+      "name": "think_4",
+      "input": {
+        "note": "pass 4"
+      },
+      "output": "Continue path 4.",
+      "error": null,
+      "latency_ms": 44
+    },
+    {
+      "id": "step_5",
+      "type": "llm",
+      "name": "think_5",
+      "input": {
+        "note": "pass 5"
+      },
+      "output": "Continue path 5.",
+      "error": null,
+      "latency_ms": 45
+    },
+    {
+      "id": "step_6",
+      "type": "llm",
+      "name": "think_6",
+      "input": {
+        "note": "pass 6"
+      },
+      "output": "Continue path 6.",
+      "error": null,
+      "latency_ms": 46
+    },
+    {
+      "id": "step_7",
+      "type": "llm",
+      "name": "think_7",
+      "input": {
+        "note": "pass 7"
+      },
+      "output": "Continue path 7.",
+      "error": null,
+      "latency_ms": 47
+    },
+    {
+      "id": "step_8",
+      "type": "retrieval",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy"
+      },
+      "output": {
+        "hits": 4,
+        "chunks": [
+          {
+            "source": "help://refund",
+            "text": "30 days policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy policy "
+          },
+          {
+            "source": "help://returns",
+            "text": "keep the receipt"
+          },
+          {
+            "source": "help://shipping",
+            "text": "5 business days"
+          },
+          {
+            "source": "help://warranty",
+            "text": "12 months"
+          }
+        ]
+      },
+      "error": null,
+      "latency_ms": 90
+    },
+    {
+      "id": "step_9",
+      "type": "tool",
+      "name": "get_order",
+      "input": {
+        "order_id": "ord_9"
+      },
+      "output": {
+        "status": "paid"
+      },
+      "error": null,
+      "latency_ms": 40,
+      "parent_id": "step_1"
+    },
+    {
+      "id": "step_10",
+      "type": "tool",
+      "name": "get_customer",
+      "input": {
+        "customer_id": "customer_12345"
+      },
+      "output": {
+        "email": "user@example.test"
+      },
+      "error": null,
+      "latency_ms": 40,
+      "schema": {
+        "required": [
+          "customer_id"
+        ],
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "id": "step_11",
+      "type": "tool",
+      "name": "get_order",
+      "input": {
+        "order_id": "ord_10"
+      },
+      "output": {
+        "status": "paid"
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_12",
+      "type": "llm",
+      "name": "answer",
+      "input": null,
+      "output": "Order ord_9 is paid. Refunds: 30 days.",
+      "error": null,
+      "latency_ms": 100
+    }
+  ],
+  "duration_ms": 2100,
+  "tokens_in": 900,
+  "tokens_out": 180
+}

@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "run_id": "retry-silent",
+  "status": "success",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "llm",
+      "name": "plan",
+      "input": null,
+      "output": "Search, then recover.",
+      "error": null,
+      "latency_ms": 50
+    },
+    {
+      "id": "step_2",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy"
+      },
+      "output": {
+        "hits": 0,
+        "chunks": []
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_3",
+      "type": "llm",
+      "name": "think",
+      "input": null,
+      "output": "Try again.",
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_4",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy"
+      },
+      "output": {
+        "hits": 0,
+        "chunks": []
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_5",
+      "type": "llm",
+      "name": "think",
+      "input": null,
+      "output": "Once more.",
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_6",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy"
+      },
+      "output": {
+        "hits": 0,
+        "chunks": []
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_7",
+      "type": "tool",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy 2024"
+      },
+      "output": {
+        "hits": 1,
+        "chunks": [
+          "30 days"
+        ]
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_8",
+      "type": "tool",
+      "name": "get_order",
+      "input": {
+        "order_id": "ord_9"
+      },
+      "output": {
+        "status": 500
+      },
+      "error": "HTTP 500 Internal Server Error",
+      "latency_ms": 60
+    },
+    {
+      "id": "step_9",
+      "type": "tool",
+      "name": "get_order",
+      "input": {
+        "order_id": "ord_9"
+      },
+      "output": {
+        "status": "paid"
+      },
+      "error": null,
+      "latency_ms": 50
+    },
+    {
+      "id": "step_10",
+      "type": "tool",
+      "name": "ping",
+      "input": {
+        "n": 1
+      },
+      "output": {
+        "ok": true
+      },
+      "error": null,
+      "latency_ms": 10
+    },
+    {
+      "id": "step_11",
+      "type": "tool",
+      "name": "ping",
+      "input": {
+        "n": 1
+      },
+      "output": {
+        "ok": true
+      },
+      "error": null,
+      "latency_ms": 10
+    },
+    {
+      "id": "step_12",
+      "type": "llm",
+      "name": "answer",
+      "input": null,
+      "output": "Order ord_9 is paid.",
+      "error": null,
+      "latency_ms": 80
+    }
+  ],
+  "duration_ms": 1800,
+  "tokens_in": 200,
+  "tokens_out": 40
+}

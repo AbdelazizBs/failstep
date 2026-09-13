@@ -1,0 +1,25 @@
+failstep 0.1.0
+file         tests/traces/multi-failure.json
+run          support-agent
+status       success
+duration     18500 ms
+steps        25
+
+root cause
+  FS001  malformed output
+  steps  16  draft
+
+evidence
+  steps   1
+  reason  truncated json
+  output  {"answer": "refunds are
+  tool    draft
+
+recommendation
+  Return complete JSON from the tool. Do not truncate the payload.
+
+secondary
+  FS002  tool schema  (steps 3, 4, 6, get_customer)
+  FS003  tool failure  (steps 18, notify_billing)
+  FS004  retry loop  (steps 13-15, search_docs)
+  FS005  timeout  (steps 8)

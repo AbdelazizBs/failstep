@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "run_id": "schema-traps",
+  "status": "failed",
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "llm",
+      "name": "plan",
+      "input": null,
+      "output": "Call get_customer.",
+      "error": null,
+      "latency_ms": 80
+    },
+    {
+      "id": "step_2",
+      "type": "tool",
+      "name": "get_customer",
+      "input": {
+        "email": "user@example.test"
+      },
+      "output": null,
+      "error": "customer_id is required",
+      "latency_ms": 40,
+      "schema": {
+        "required": [
+          "customer_id"
+        ],
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "id": "step_3",
+      "type": "tool",
+      "name": "get_customer",
+      "input": {
+        "customer_id": "customer_12345",
+        "nickname": "aziz"
+      },
+      "output": {
+        "email": "user@example.test"
+      },
+      "error": null,
+      "latency_ms": 40,
+      "schema": {
+        "required": [
+          "customer_id"
+        ],
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "id": "step_4",
+      "type": "tool",
+      "name": "get_customer",
+      "input": {
+        "customer_id": 99
+      },
+      "output": null,
+      "error": "validation error: customer_id must be string",
+      "latency_ms": 30,
+      "schema": {
+        "required": [
+          "customer_id"
+        ],
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "id": "step_5",
+      "type": "tool",
+      "name": "get_customer",
+      "input": {
+        "customer_id": null
+      },
+      "output": null,
+      "error": "customer_id is required",
+      "latency_ms": 30,
+      "schema": {
+        "required": [
+          "customer_id"
+        ],
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "id": "step_6",
+      "type": "tool",
+      "name": "get_customer",
+      "input": {
+        "email": "user@example.test",
+        "nickname": "aziz"
+      },
+      "output": null,
+      "error": "customer_id is required",
+      "latency_ms": 30,
+      "schema": {
+        "required": [
+          "customer_id"
+        ],
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "duration_ms": 1200,
+  "tokens_in": 90,
+  "tokens_out": 20
+}
