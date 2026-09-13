@@ -68,7 +68,7 @@ failstep version
 Native JSON and JSONL. Also OpenAI `messages` + `tool_calls`, LangChain `intermediate_steps`, and exported OpenTelemetry GenAI JSON (`resourceSpans` or `{spans: [...]}`). Contract: [docs/TRACE_FORMAT.md](docs/TRACE_FORMAT.md).
 How the report must look: [docs/OUTPUT.md](docs/OUTPUT.md).
 
-Detectors: FS001 malformed output, FS002 tool schema, FS003 tool failure, FS004 retry loop, FS005 timeout. Optional leftover (`FS000`) only if `FAILSTEP_LLM_URL` is set, httpx is installed (`pip install failstep[llm]`), and no error finding exists. `--no-llm` skips it. Secrets are redacted before the request.
+Detectors: FS001 malformed output, FS002 tool schema, FS003 tool failure, FS004 retry loop, FS005 timeout, FS006 empty retrieval, FS007 duplicate chunks, FS008 conflicting sources. Optional leftover (`FS000`) only if `FAILSTEP_LLM_URL` is set, httpx is installed (`pip install failstep[llm]`), and no error finding exists. `--no-llm` skips it. Secrets are redacted before the request.
 
 ## Tests
 

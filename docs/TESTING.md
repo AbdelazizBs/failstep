@@ -19,7 +19,7 @@ If a PR cannot name which of those it protects, it is not ready.
 ```text
 examples/traces/          product demos (README)
 tests/
-  traces/                 hard fixtures (openai, langchain, jsonl, traps, otel, leftover)
+  traces/                 hard fixtures (openai, langchain, jsonl, traps, otel, leftover, retrieval)
   test_parser.py
   test_inspect.py
   test_cli_exit.py
@@ -45,6 +45,10 @@ tests/
     otel-retry-loop.json
     otel-retry-loop.md
     inspect-otel-retry-loop.terminal.txt
+    retrieval-silent.terminal.txt
+    retrieval-silent.json
+    retrieval-silent.md
+    empty-retrieval.terminal.txt
 ```
 
 `examples/traces/` is the product demo. `tests/traces/` can be ugly. Do not put secrets in either.
@@ -58,9 +62,10 @@ FS002    | missing/extra/wrong-type/null required args, validation error text | 
 FS003    | HTTP 4xx/5xx, empty error payload | schema errors, timeout text, success | recovered run still names the failed step | step error / http status copied
 FS004    | 3+ consecutive identical tool+args | 2 repeats, changed args, LLM between repeats | does not collapse similar queries | identical calls counted, args copied
 FS005    | step >=15000ms, timeout text, run >=30000ms, 80% dominate warning | healthy latencies | missing duration stays null, multiple timeouts keep the slowest | latency_ms / run_duration_ms from the file
+FS006    | retrieval step, zero documents or hits 0 | tool searches, missing document list with hits>0 | does not treat tool search_docs as retrieval | query, hits, chunks from the step
+FS007    | 2+ chunks with same id or source+text in one step | unique chunks, similar text with different ids | does not hash across steps | copies, source, text from the step
+FS008    | same scalar field, different values, same retrieval step | different free-text, different topics, one document | does not infer contradiction from prose | field, values, sources from the step
 ```
-
-Phase 5 owns empty retrieval and duplicate chunks. Those fixtures must stay silent today.
 
 ## Layers
 
@@ -155,6 +160,15 @@ python -m failstep diagnose tests/traces/leftover-secret.json
 
 LLM tests use a fake HTTP server. No real API key in CI. `tests/traces/leftover-secret.json` contains `sk-test-example` and `Bearer secret-token`; those strings must not appear in the POST body. `--no-llm` skips. An error finding skips leftover. Invented step indexes drop the leftover finding.
 
+### Phase 5 (done)
+
+```text
+python -m pytest
+python -m failstep diagnose tests/traces/retrieval-silent.json
+```
+
+`retrieval-silent.json` is FS006 then FS007, never FS008, never hallucination. `retrieval-conflict.json` is FS008 on `refunds`. `retrieval-conflict-silent.json` (different texts, no shared field) stays empty. `retrieval-then-fail.json` stays FS003.
+
 ### Phase 8
 
 GitHub Actions: pytest + ruff on 3.11, 3.12, 3.13. Windows + Ubuntu. That is when "it works on my machine" stops being an argument.
@@ -170,7 +184,7 @@ python -m pytest
 
 Same with `uv run` if that is how you installed.
 
-No coverage theater. We do not chase 100%. We chase: parser, five detectors, three report formats, four exit codes.
+No coverage theater. We do not chase 100%. We chase: parser, eight detectors, leftover LLM, three report formats, four exit codes.
 
 ## What a detector PR must include
 

@@ -86,13 +86,25 @@ python -m failstep diagnose examples/traces/retry-loop.json
 
 Without `FAILSTEP_LLM_URL`, leftover dump stays silent. Retry dump stays FS004.
 
-Freeze. Do not start Phase 5 until someone says go.
-
 ---
 
-## Phase 5 — RAG detectors
+## Phase 5 — RAG detectors (done)
 
-Empty retrieval, duplicate chunks, conflicting sources. Only when retrieval steps exist. Same golden + honesty rules.
+Empty retrieval (FS006), duplicate chunks (FS007), conflicting sources (FS008). Only when `type=retrieval` steps exist. Duplicate identity is `id` / `doc_id` / `chunk_id`, else `source`+`text`. Conflicts fire only on a shared scalar field (not free-text). Different texts from different sources stay silent.
+
+Gate (green, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m failstep diagnose tests/traces/retrieval-silent.json
+python -m failstep diagnose tests/traces/retrieval-conflict.json
+python -m failstep diagnose tests/traces/retrieval-then-fail.json
+```
+
+Empty+duplicate dump → FS006 root, FS007 secondary, no FS008. Structured `refunds` true/false → FS008. Tool failure after a healthy retrieval stays FS003.
+
+Freeze. Do not start Phase 6 until someone says go.
 
 ---
 

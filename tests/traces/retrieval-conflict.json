@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "run_id": "retrieval-conflict",
+  "status": "failed",
+  "duration_ms": 500,
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "retrieval",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy"
+      },
+      "output": {
+        "hits": 2,
+        "chunks": [
+          {
+            "id": "help://refund",
+            "refunds": true,
+            "text": "Refunds are allowed."
+          },
+          {
+            "id": "help://returns",
+            "refunds": false,
+            "text": "Refunds are not allowed."
+          }
+        ]
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_2",
+      "type": "llm",
+      "name": "answer",
+      "input": null,
+      "output": "Refunds are allowed.",
+      "error": null,
+      "latency_ms": 80
+    }
+  ]
+}

@@ -74,6 +74,12 @@ Tool args: `gen_ai.tool.call.arguments`. Tool result: `gen_ai.tool.call.result`.
 
 This is not universal OTEL support.
 
+## Retrieval steps (Phase 5)
+
+A step with `type: retrieval` may return documents as `chunks`, `documents`, `docs`, `results`, or `items`, plus optional `hits`.
+
+FS006 fires when that list is empty or `hits` is 0. FS007 fires when two chunks share `id` / `doc_id` / `chunk_id`, or the same `source`+`text`. FS008 fires when two chunks disagree on a shared scalar field (`refunds`, `window_days`, …). `text` is not compared. Tool steps named `search_docs` are not retrieval.
+
 ## Stability
 
 Native schema is versioned. Additive fields are fine. Renames need a new schema version field (`schema_version: 1`).

@@ -58,7 +58,11 @@ Detectors first. LLM leftover is Phase 4, shipped, opt-in via `FAILSTEP_LLM_URL`
 
 ## V1 detectors
 
-FS001 malformed, FS002 schema, FS003 tool failure, FS004 retry, FS005 timeout.
+FS001 malformed, FS002 schema, FS003 tool failure, FS004 retry, FS005 timeout, FS006 empty retrieval, FS007 duplicate chunks, FS008 conflicting sources.
+
+FS006: retrieval step with zero documents or `hits: 0`. Tool searches are not retrieval.
+FS007: warning. Same chunk id, or same source+text, twice in one step.
+FS008: two documents in one step disagree on a shared scalar field. Free-text is not a conflict.
 
 FS005: step `>= 15000ms` error, run `>= 30000ms` error, one step `>= 80%` of run and `>= 5000ms` warning.
 
@@ -92,4 +96,4 @@ https://github.com/AbdelazizBs/failstep.git
 
 ## Next
 
-Phase 4 is done. Leftover LLM is opt-in. Freeze. Phase 5 is RAG detectors, not started.
+Phase 5 is done. RAG detectors are deterministic. Freeze. Phase 6 is compare, not started.

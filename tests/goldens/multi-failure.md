@@ -18,3 +18,4 @@
 - **FS003 tool failure** (steps 18, notify_billing)
 - **FS004 retry loop** (steps 13-15, search_docs)
 - **FS005 timeout** (steps 8)
+- **FS007 duplicate chunks** (steps 10, search_docs)

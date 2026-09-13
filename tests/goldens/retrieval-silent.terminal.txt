@@ -1,0 +1,24 @@
+failstep 0.1.0
+file         tests/traces/retrieval-silent.json
+run          retrieval-silent
+status       success
+duration     400 ms
+steps        3
+
+root cause
+  FS006  empty retrieval
+  steps  1  search_docs
+
+evidence
+  tool    search_docs
+  steps   1
+  hits    0
+  chunks  0
+  query   refund policy
+
+recommendation
+  Do not answer from an empty retrieval. Retry the query or tell the user nothing was
+  found.
+
+secondary
+  FS007  duplicate chunks  (steps 2, search_docs)

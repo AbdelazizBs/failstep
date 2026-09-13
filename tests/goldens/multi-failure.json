@@ -194,6 +194,42 @@
       ],
       "recommendation": "Bound the step with a timeout. Stop waiting after the limit.",
       "source": "deterministic"
+    },
+    {
+      "id": "FS007",
+      "detector": "duplicate_chunks",
+      "title": "duplicate chunks",
+      "severity": "warning",
+      "step_ids": [
+        "step_10"
+      ],
+      "step_indexes": [
+        10
+      ],
+      "evidence": [
+        {
+          "key": "tool",
+          "value": "search_docs"
+        },
+        {
+          "key": "copies",
+          "value": 2
+        },
+        {
+          "key": "chunks",
+          "value": 3
+        },
+        {
+          "key": "source",
+          "value": "help://refund"
+        },
+        {
+          "key": "text",
+          "value": "30 days"
+        }
+      ],
+      "recommendation": "Deduplicate retrieval chunks by id before sending them to the model.",
+      "source": "deterministic"
     }
   ],
   "findings": [
@@ -378,6 +414,42 @@
         }
       ],
       "recommendation": "Bound the step with a timeout. Stop waiting after the limit.",
+      "source": "deterministic"
+    },
+    {
+      "id": "FS007",
+      "detector": "duplicate_chunks",
+      "title": "duplicate chunks",
+      "severity": "warning",
+      "step_ids": [
+        "step_10"
+      ],
+      "step_indexes": [
+        10
+      ],
+      "evidence": [
+        {
+          "key": "tool",
+          "value": "search_docs"
+        },
+        {
+          "key": "copies",
+          "value": 2
+        },
+        {
+          "key": "chunks",
+          "value": 3
+        },
+        {
+          "key": "source",
+          "value": "help://refund"
+        },
+        {
+          "key": "text",
+          "value": "30 days"
+        }
+      ],
+      "recommendation": "Deduplicate retrieval chunks by id before sending them to the model.",
       "source": "deterministic"
     }
   ]

@@ -220,7 +220,7 @@ Do not print a Python traceback on user errors. Tracebacks are exit 3 only.
 
 ## Voice
 
-- Short titles: `retry loop`, `tool schema`, `malformed output`, `tool failure`, `timeout`, `leftover`
+- Short titles: `retry loop`, `tool schema`, `malformed output`, `tool failure`, `timeout`, `empty retrieval`, `duplicate chunks`, `conflicting sources`, `leftover`
 - Evidence is data, not prose (`identical_calls  3`, not "It appears the agent may have retried")
 - Recommendation is a patch in words: what to cap, validate, or stop
 - Never "might", "perhaps", "95%", "critical!!!"

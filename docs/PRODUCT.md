@@ -125,9 +125,12 @@ Not in V1: `explain`, `compare`, `fix`, `serve`, `init`, capture SDK.
 | FS003 | ToolFailure | exception, HTTP 4xx/5xx, empty error payload |
 | FS004 | RetryLoop | same tool + same args, 3+ times, no meaningful change |
 | FS005 | Timeout | step/run over threshold, or one step dominates duration |
+| FS006 | EmptyRetrieval | retrieval step returned zero documents |
+| FS007 | DuplicateChunks | same chunk id or source+text twice in one retrieval step |
+| FS008 | ConflictingSources | two documents in one step disagree on a shared scalar field |
 | FS000 | leftover | opt-in only: no error finding, `FAILSTEP_LLM_URL` set, warning |
 
-Root cause = first `error` in that ID order, else first `warning`. FS000 cannot replace FS001–FS005.
+Root cause = first `error` in that ID order, else first `warning`. FS000 cannot replace FS001–FS008.
 
 ## Success
 

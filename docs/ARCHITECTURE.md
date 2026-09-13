@@ -55,6 +55,7 @@ src/failstep/
         tool_error.py
         retry.py
         timeout.py
+        retrieval.py
 
 tests/
 examples/traces/
@@ -88,6 +89,9 @@ Nested OTEL spans flatten to ordered steps. Optional `parent_id` in metadata.
 3. FS003 ToolFailure
 4. FS004 RetryLoop
 5. FS005 Timeout
+6. FS006 EmptyRetrieval
+7. FS007 DuplicateChunks
+8. FS008 ConflictingSources
 
 Root cause = highest severity (`error` then `warning`), then this order, then first step index.
 

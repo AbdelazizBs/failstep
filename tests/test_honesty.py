@@ -29,6 +29,10 @@ COUNTED_KEYS = {
     "schema_required",
     "schema required",
     "payload",
+    "hits",
+    "chunks",
+    "copies",
+    "values",
 }
 
 ALLOWED_STRINGS = {"unchanged", "changed", "null", "true", "false"}
