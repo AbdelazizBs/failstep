@@ -105,8 +105,9 @@ No Docker. No cloud account.
 - One positional path
 - Flags: `--format`, `--fail-on`, `--no-llm`, `--no-redact`
 - `compare` takes two paths. No leftover. Counted diffs only.
+- `fix` prints a patch. No leftover. Does not write files.
 - Garbage input: exit 2, point at `docs/TRACE_FORMAT.md`
-- ASCII-safe terminal (this machine is Windows)
+- ASCII-safe terminal (Windows included)
 - JSON field names frozen by tests
 
 If a developer needs a tutorial after `failstep --help`, we failed.

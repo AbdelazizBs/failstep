@@ -40,7 +40,7 @@ ALLOWED_STRINGS = {"unchanged", "changed", "null", "true", "false"}
 
 def _fixture_for(golden: Path) -> Path | None:
     name = golden.name
-    if name.startswith("compare-"):
+    if name.startswith("compare-") or name.startswith("fix-"):
         return None
     if name.startswith("inspect-"):
         name = name.removeprefix("inspect-")

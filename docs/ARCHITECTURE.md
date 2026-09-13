@@ -21,6 +21,7 @@ trace.json / trace.jsonl / otel.json
         +-- findings --> report (one root cause + secondary)
         |
         +-- compare      two reports, counted diffs only
+        +-- fix          print the recommendation; never writes files
         |
         +-- no error finding
                  |
@@ -33,7 +34,7 @@ trace.json / trace.jsonl / otel.json
 
 ## Layout
 
-Phase 4 (shipped). `adapters.py` maps OpenAI, LangChain, and exported OTEL GenAI JSON. `redact.py` strips secrets. `llm.py` posts a summary only when `FAILSTEP_LLM_URL` is set and no error finding exists.
+Phase 6 (shipped). `compare` counts diffs. `fix` prints the recommendation and does not write files.
 
 ```text
 src/failstep/

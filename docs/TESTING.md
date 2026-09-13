@@ -29,6 +29,7 @@ tests/
   test_llm.py
   test_redact.py
   test_compare.py
+  test_fix.py
   test_honesty.py
   test_detectors/
   goldens/
@@ -53,6 +54,10 @@ tests/
     compare-retry-loop.terminal.txt
     compare-retry-loop.json
     compare-retry-loop.md
+    fix-retry-loop.terminal.txt
+    fix-retry-loop.json
+    fix-retry-loop.md
+    fix-success.terminal.txt
 ```
 
 `examples/traces/` is the product demo. `tests/traces/` can be ugly. Do not put secrets in either.
@@ -113,9 +118,9 @@ Use Typer's `CliRunner`. Assert stdout **and** `exit_code`.
 
 `--format json` on a bad file still prints a small JSON error object, not a traceback. Tracebacks are for exit 3.
 
-### 4. Hands on this machine
+### 4. Manual CLI check
 
-Windows first. After the test suite is green:
+After the test suite is green:
 
 ```text
 python -m failstep inspect examples/traces/retry-loop.json
@@ -182,11 +187,20 @@ python -m failstep compare examples/traces/retry-loop.json examples/traces/succe
 
 Retry vs success is gone FS004, counted duration/steps/tokens. Identical files exit 0. Leftover is never called even if `FAILSTEP_LLM_URL` is set. Missing duration is omitted, not zero. Garbage still exits 2.
 
+### Phase 7 (done)
+
+```text
+python -m pytest
+python -m failstep fix examples/traces/retry-loop.json
+```
+
+The patch is the FS004 recommendation. Success is `patch none`, exit 0. The trace file is not rewritten. Leftover is never called. Garbage exits 2.
+
 ### Phase 8
 
 GitHub Actions: pytest + ruff on 3.11, 3.12, 3.13. Windows + Ubuntu. That is when "it works on my machine" stops being an argument.
 
-Until then, **you** run pytest on this Windows box before every push.
+Until then, run pytest before every push.
 
 ## Commands we always run before a push
 
@@ -197,7 +211,7 @@ python -m pytest
 
 Same with `uv run` if that is how you installed.
 
-No coverage theater. We do not chase 100%. We chase: parser, eight detectors, leftover LLM, compare diffs, three report formats, four exit codes.
+No coverage theater. We do not chase 100%. We chase: parser, eight detectors, leftover LLM, compare diffs, fix patches, three report formats, four exit codes.
 
 ## What a detector PR must include
 

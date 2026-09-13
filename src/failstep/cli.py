@@ -21,6 +21,9 @@ from failstep.report import (
     format_diagnose_terminal,
     format_error_json,
     format_error_terminal,
+    format_fix_json,
+    format_fix_markdown,
+    format_fix_terminal,
     format_inspect_json,
     format_inspect_markdown,
     format_inspect_terminal,
@@ -190,6 +193,31 @@ def compare(
     else:
         sys.stdout.write(format_compare_terminal(result, __version__))
     if result.has_diff():
+        raise typer.Exit(1)
+
+
+@app.command()
+def fix(
+    trace: Path = typer.Argument(..., help="Path to a native JSON or JSONL trace."),
+    output_format: OutputFormat = typer.Option(
+        OutputFormat.terminal,
+        "--format",
+        help="terminal, json, or markdown.",
+    ),
+) -> None:
+    """Print a suggested patch. Does not write files. Never calls leftover."""
+    run = _load(trace, output_format)
+    try:
+        report = diagnose_run(run, _display_path(trace), no_llm=True)
+    except Exception:
+        _emit_internal(output_format)
+    if output_format is OutputFormat.json:
+        sys.stdout.write(format_fix_json(report, __version__))
+    elif output_format is OutputFormat.markdown:
+        sys.stdout.write(format_fix_markdown(report, __version__))
+    else:
+        sys.stdout.write(format_fix_terminal(report, __version__))
+    if report.root_cause is not None:
         raise typer.Exit(1)
 
 

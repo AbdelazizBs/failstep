@@ -191,6 +191,72 @@ def format_diagnose_markdown(report: Report, version: str) -> str:
 
 
 
+
+def format_fix_terminal(report: Report, version: str) -> str:
+    lines = [
+        f"failstep {version}",
+        _label("file", report.file),
+        _label("run", report.run.id),
+        "",
+        "patch",
+    ]
+    root = report.root_cause
+    if root is None:
+        lines.append("  none")
+        lines.append("")
+        lines.append("also")
+        lines.append("  none")
+        return "\n".join(lines) + "\n"
+    lines.extend(_patch_lines(root))
+    lines.append("")
+    lines.append("also")
+    if report.secondary:
+        for item in report.secondary:
+            lines.extend(_patch_lines(item))
+    else:
+        lines.append("  none")
+    return "\n".join(lines) + "\n"
+
+
+def format_fix_json(report: Report, version: str) -> str:
+    root = report.root_cause
+    payload = {
+        "schema_version": 1,
+        "tool": "failstep",
+        "tool_version": version,
+        "file": report.file,
+        "run": _run_summary(report.run),
+        "patch": _patch_json(root) if root else None,
+        "also": [_patch_json(item) for item in report.secondary],
+    }
+    return json.dumps(payload, indent=2, ensure_ascii=True) + "\n"
+
+
+def format_fix_markdown(report: Report, version: str) -> str:
+    lines = [
+        f"## failstep {version}",
+        f"`{report.file}` · run `{report.run.id}`",
+        "",
+        "### Patch",
+    ]
+    root = report.root_cause
+    if root is None:
+        lines.append("_none_")
+        lines.append("")
+        lines.append("### Also")
+        lines.append("_none_")
+        return "\n".join(lines) + "\n"
+    lines.extend(_patch_md(root))
+    lines.append("")
+    lines.append("### Also")
+    if report.secondary:
+        for item in report.secondary:
+            lines.extend(_patch_md(item, bullet=True))
+    else:
+        lines.append("_none_")
+    return "\n".join(lines) + "\n"
+
+
 def format_compare_terminal(result: CompareResult, version: str) -> str:
     lines = [
         f"failstep {version}",
@@ -513,3 +579,39 @@ def _delta_json(item: FieldDelta) -> dict[str, Any]:
     if item.delta is not None:
         payload["delta"] = item.delta
     return payload
+
+
+def _patch_json(finding: Finding) -> dict[str, Any]:
+    return {
+        "id": finding.id,
+        "title": finding.title,
+        "step_ids": finding.step_ids,
+        "step_indexes": finding.step_indexes,
+        "recommendation": finding.recommendation,
+    }
+
+
+def _patch_lines(finding: Finding) -> list[str]:
+    lines = [f"  {finding.id}  {finding.title}"]
+    step_line = f"  steps  {format_step_range(finding)}"
+    tool = _evidence_value(finding, "tool")
+    if tool:
+        step_line += f"  {tool}"
+    lines.append(step_line)
+    rec = finding.recommendation or "Insufficient evidence."
+    for wrapped in _wrap(rec, EVIDENCE_WRAP - 2):
+        lines.append(f"  {wrapped}")
+    return lines
+
+
+def _patch_md(finding: Finding, *, bullet: bool = False) -> list[str]:
+    tool = _evidence_value(finding, "tool")
+    where = format_step_range(finding)
+    title = f"**{finding.id} {finding.title}**"
+    if tool:
+        title += f" on `{tool}`"
+    if where:
+        title += f" (steps {where})"
+    if bullet:
+        return [f"- {title}: {finding.recommendation}"]
+    return [title, "", finding.recommendation]

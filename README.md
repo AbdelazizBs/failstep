@@ -13,7 +13,7 @@ No API key. No network. A root cause, quoted evidence, and what to change.
 
 Repo: [github.com/AbdelazizBs/failstep](https://github.com/AbdelazizBs/failstep)
 
-**Phase 2 is in this repo:** `inspect` prints the run. `diagnose` names the failed step.
+`inspect` prints the run. `diagnose` names the failed step. `compare` counts diffs. `fix` prints the recommendation.
 
 ## 60 seconds
 
@@ -63,6 +63,7 @@ python -m failstep version
 failstep inspect TRACE [--format terminal|json|markdown]
 failstep diagnose TRACE [--format terminal|json|markdown] [--fail-on error|warning] [--no-llm] [--no-redact]
 failstep compare OLD NEW [--format terminal|json|markdown]
+failstep fix TRACE [--format terminal|json|markdown]
 failstep version
 ```
 

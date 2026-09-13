@@ -123,13 +123,24 @@ python -m failstep compare examples/traces/success.json examples/traces/success.
 
 Retry vs success → exit 1, gone FS004, status failed → success, steps 8 → 4. Identical success files → exit 0.
 
-Freeze. Do not start Phase 7 until someone says go.
-
 ---
 
-## Phase 7 — Fix suggestions
+## Phase 7 — Fix suggestions (done)
 
-`failstep fix trace.json` prints a suggested patch to stdout. Same voice as the recommendation line. Does not write the user's source.
+`failstep fix TRACE` prints the recommendation as a patch. Same voice as diagnose. Does not write the user's source. Leftover is never called.
+
+Gate (green, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m failstep fix examples/traces/retry-loop.json
+python -m failstep fix examples/traces/success.json
+```
+
+Retry dump → exit 1, patch FS004, cap retries. Success dump → exit 0, patch none. Trace file bytes stay unchanged.
+
+Freeze. Do not start Phase 8 until someone says go.
 
 ---
 
@@ -137,9 +148,7 @@ Freeze. Do not start Phase 7 until someone says go.
 
 GitHub Actions: pytest + ruff, Python 3.11/3.12/3.13, Ubuntu + Windows.
 
-PyPI, CONTRIBUTING, issue templates, changelog, 20s terminal recording, LinkedIn.
-
-Not before Phase 2 goldens are boring.
+PyPI packaging, CONTRIBUTING, issue templates, changelog.
 
 ---
 

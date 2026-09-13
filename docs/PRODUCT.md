@@ -104,7 +104,7 @@ JSON field names are a contract. Tests freeze them. A silent "healthy" on garbag
 | "Fake metrics." | No confidence field on the Finding model. |
 | "Windows mojibake." | ASCII-safe terminal. No required emoji. |
 | "Secrets leaked to GPT." | Default path never leaves the machine. LLM path redacts first. |
-| "Empty project." | Golden traces + detector tests before any social post. |
+| "Empty project." | Golden traces + detector tests ship with the CLI. |
 
 ## V1 commands
 
@@ -112,10 +112,11 @@ JSON field names are a contract. Tests freeze them. A silent "healthy" on garbag
 failstep inspect TRACE
 failstep diagnose TRACE [--format terminal|json|markdown] [--no-llm] [--no-redact] [--fail-on error|warning]
 failstep compare OLD NEW [--format terminal|json|markdown]
+failstep fix TRACE [--format terminal|json|markdown]
 failstep version
 ```
 
-Not in V1: `explain`, `fix`, `serve`, `init`, capture SDK.
+Not in V1: `explain`, `serve`, `init`, capture SDK.
 
 ## V1 detectors
 
@@ -144,4 +145,4 @@ failstep diagnose examples/traces/retry-loop.json
 
 sees the retry, the step indexes, the repeated arguments, and "stop retrying identical calls".
 
-If that is not true, we do not launch on LinkedIn.
+If that is not true, V1 is not ready.

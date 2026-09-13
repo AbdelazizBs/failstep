@@ -209,6 +209,31 @@ JSON field names: `old`, `new`, `diff.findings.{gone,added,same}`, `diff.root_ca
 
 Exit 1 when any finding id or printed run field changed. Exit 0 when there is no diff.
 
+## Fix — terminal
+
+```text
+failstep 0.1.0
+file         examples/traces/retry-loop.json
+run          checkout-agent
+
+patch
+  FS004  retry loop
+  steps  3-5  search_docs
+  Cap identical tool retries at 1. Return the first error to the model.
+
+also
+  none
+```
+
+Rules:
+
+- The patch **is** the recommendation. Do not invent source edits, diffs, or extra advice.
+- Do not write files. Stdout only.
+- `also` lists secondary findings the same way, or `none`.
+- A clean run prints `patch` / `also` as `none`. Exit 0. Do not print "All good!".
+- JSON field names: `patch`, `also`. `patch` is `null` on a clean run.
+- Leftover is never called.
+
 ## Inspect — terminal
 
 A table of what happened. No verdict.

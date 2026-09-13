@@ -1,0 +1,11 @@
+failstep 0.1.0
+file         examples/traces/retry-loop.json
+run          checkout-agent
+
+patch
+  FS004  retry loop
+  steps  3-5  search_docs
+  Cap identical tool retries at 1. Return the first error to the model.
+
+also
+  none

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "tool": "failstep",
+  "tool_version": "0.1.0",
+  "file": "examples/traces/retry-loop.json",
+  "run": {
+    "id": "checkout-agent",
+    "status": "failed",
+    "duration_ms": 14820,
+    "step_count": 8,
+    "tokens_in": 4200,
+    "tokens_out": 800
+  },
+  "patch": {
+    "id": "FS004",
+    "title": "retry loop",
+    "step_ids": [
+      "step_3",
+      "step_4",
+      "step_5"
+    ],
+    "step_indexes": [
+      3,
+      5
+    ],
+    "recommendation": "Cap identical tool retries at 1. Return the first error to the model."
+  },
+  "also": []
+}
