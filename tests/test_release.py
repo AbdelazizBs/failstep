@@ -10,6 +10,21 @@ from failstep.cli import app
 
 ROOT = Path(__file__).resolve().parents[1]
 BANNED = ("linkedin", "youtube.com", "twitter.com", "x.com/")
+GONE_DOCS = (
+    ROOT / "docs" / "COMPETITORS.md",
+    ROOT / "docs" / "POSITIONING.md",
+)
+BANNED_DOCS_PHRASES = (
+    "lookalike",
+    "name squat",
+    "kitchen sink",
+    "agent-debug",
+    "agentdebugx",
+    "agentlint",
+    "whyfail",
+    "agentinspect",
+    "langfuse",
+)
 
 
 def test_help_lists_commands(runner: CliRunner) -> None:
@@ -52,7 +67,35 @@ def test_docs_stay_product_only() -> None:
     hits: list[str] = []
     for path in paths:
         blob = path.read_text(encoding="utf-8").lower()
-        for word in BANNED:
+        for word in (*BANNED, *BANNED_DOCS_PHRASES):
             if word in blob:
                 hits.append(f"{path.relative_to(ROOT)}:{word}")
     assert hits == []
+
+
+def test_comparison_docs_are_gone() -> None:
+    present = [path.name for path in GONE_DOCS if path.exists()]
+    assert present == []
+
+
+def test_gitignore_keeps_local_data_private() -> None:
+    text = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    for needle in (
+        ".pypi-venv/",
+        ".release-venv/",
+        ".*-venv/",
+        "local/",
+        "media/",
+        "private/",
+        ".env",
+    ):
+        assert needle in text
+
+
+def test_sdist_lists_public_paths_only() -> None:
+    data = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    only = data["tool"]["hatch"]["build"]["targets"]["sdist"]["only-include"]
+    assert "src/failstep" in only
+    assert "docs" in only
+    for banned in (".pypi-venv", "local", "media", "private"):
+        assert banned not in only

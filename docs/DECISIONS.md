@@ -6,29 +6,15 @@ Locked. Change on purpose, in this file.
 
 **failstep**
 
-Checked 2026-09-13:
-
-| Candidate | Result |
-|---|---|
-| agent-doctor | Dead. PyPI SDK + npm MCP scanner + GitHub CLIs |
-| agentlint | Dead. Real-time coding-agent guardrails |
-| runlint | Dead. Empty PyPI squat, "AI Agent Observability" |
-| whyfail | Dead. Evidence RCA for **Python exceptions** |
-| failtrace | Dead. Test-result LLM analysis |
-| rag-doctor | Dead. RAG-only RCA |
-| agentdx | Dead. Pathology SDK |
-| whyran | PyPI 404, but GitHub user `WhyRan` exists; too close to whyfail |
-| tracedx | PyPI 404, collides with agentdx |
-| rundiag | PyPI 404, forgettable |
-| failstep | **Chosen.** PyPI 404. GitHub user 404. GitHub search: 0 repos. Names the failed step. |
-
 Command: `failstep diagnose trace.json`
 Package: `failstep`
-Repo folder: `failstep`
+Repo: [AbdelazizBs/failstep](https://github.com/AbdelazizBs/failstep)
+
+The name refers to the failed step in a run.
 
 ## Product
 
-Local CLI. One file in. Root cause + evidence + recommendation out.
+Local CLI. One file in. Root cause, evidence, and a recommendation out.
 
 Not: framework, RAG engine, dashboard, coding agent, SaaS, capture SDK (V1).
 
@@ -46,7 +32,7 @@ V1 runtime deps: typer, rich, pydantic. See STACK.md.
 
 Doors we keep: `python -m failstep`. Runtime deps stay typer, rich, pydantic. httpx is `failstep[llm]` only.
 
-Not Python 3.12-only: too many conda/company images still on 3.11, and we would lose them for no feature.
+Not Python 3.12-only: too many conda and company images still on 3.11.
 
 ## LLM
 
@@ -93,6 +79,10 @@ Pytest from Phase 1. Golden traces + frozen reports. Exit codes 0/1/2/3 asserted
 A finding's evidence must appear in the fixture file. Spec: `TESTING.md`.
 
 CI (Actions, 3.11-3.13, Windows+Ubuntu) is Phase 8, shipped. pytest + ruff on every pull request.
+
+## Local data
+
+Virtualenvs, recordings, and personal traces stay on the machine. `.gitignore` and the sdist include list keep them out of git and PyPI. Put private dumps in `local/`. Never commit secrets.
 
 ## Remote
 

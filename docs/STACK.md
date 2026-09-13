@@ -17,9 +17,9 @@ Also: `python -m failstep diagnose trace.json` for people whose PATH did not get
 
 ## Locked choices
 
-| Piece | Choice | Why this, not the "fancier" option |
+| Piece | Choice | Why |
 |---|---|---|
-| Language | **Python 3.11+** | Agent traces come from LangGraph, PydanticAI, LlamaIndex, CrewAI. Those people already have Python. AgentInspect owns TypeScript. We do not split. |
+| Language | **Python 3.11+** | Agent traces often come from Python stacks (LangGraph, PydanticAI, LlamaIndex, CrewAI). Contributors can patch a detector in the same language. |
 | User install | **pip / PyPI** | If it is not `pip install`, most of them will not try it. |
 | Maintainer | **uv** | Fast lockfile for us. Users never need uv. |
 | Package layout | **src/failstep**, hatchling | Standard. pip, uv, and GitHub Actions all eat `pyproject.toml`. |
@@ -37,15 +37,11 @@ A fourth runtime dep needs a sentence in `DECISIONS.md`.
 
 Stdlib does JSON, JSONL, pathlib, regex redaction. Do not add a library for those.
 
-## Why Python, not Rust / Go / TypeScript
+## Why Python
 
-| Temptation | Why it blocks *use* |
-|---|---|
-| TypeScript CLI | AgentInspect already won that crowd. Python people will not `npm i -g`. |
-| Rust / Go binary | Faster, worse for us: no one hacks a detector in a language they do not write agents in. PRs die. |
-| Dual Python + TS | We become two products. |
+The people who export these traces already have Python. One language, one package. A second implementation in TypeScript, Rust, or Go would split the product.
 
-Best stack is the one a LangGraph author can clone and patch before lunch.
+Best stack is the one an agent author can clone and patch the same afternoon.
 
 ## Python 3.11, not 3.12-only
 
@@ -66,12 +62,12 @@ No, if we leave doors and refuse product-shaped dependencies.
 | Semantic leftover | `failstep[llm]` extra with **httpx** only, Phase 4 | `openai` / `anthropic` SDKs |
 | Local model | Ollama HTTP, user installs it | Bundled weights |
 | Huge traces | Load whole file in V1 (normal dumps are small). Stream later (`ijson`) if a real file OOM | Rewrite in Rust |
-| MCP so Claude can call us | stdio entry in the same Python package | A second Node service |
+| MCP so an editor can call us | stdio entry in the same Python package | A second Node service |
 | GitHub Action | `failstep diagnose --format json --fail-on error` | A hosted app |
 | Windows PATH pain | `python -m failstep` | "Install WSL" |
 | Tool-arg schema (FS002) | Tiny required-keys + types checker | `jsonschema` until a fixture proves we need it |
 
-We can add extras. We cannot add a database and still claim we are a linter.
+We can add extras. We cannot add a database and still claim we are a local CLI.
 
 ## Optional extras (not V1)
 
@@ -98,6 +94,8 @@ uv run failstep inspect examples/traces/retry-loop.json
 ```
 
 No Docker. No cloud account.
+
+Put personal traces and recordings in `local/` or `media/`. Those directories are gitignored.
 
 ## What "simple" means in the CLI
 

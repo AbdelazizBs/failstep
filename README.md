@@ -87,15 +87,13 @@ If you use uv: `uv sync --extra dev` then `uv run pytest` / `uv run ruff check .
 
 | Doc | What it is |
 |---|---|
-| [docs/PRODUCT.md](docs/PRODUCT.md) | What we ship, the +, quality bar |
-| [docs/POSITIONING.md](docs/POSITIONING.md) | Exact difference vs lookalikes |
+| [docs/PRODUCT.md](docs/PRODUCT.md) | What we ship, quality bar |
 | [docs/STACK.md](docs/STACK.md) | Free open-source stack |
 | [docs/OUTPUT.md](docs/OUTPUT.md) | How the diagnosis looks (terminal / JSON / markdown) |
 | [docs/TESTING.md](docs/TESTING.md) | How each phase is proven |
 | [docs/PHASES.md](docs/PHASES.md) | Build order. Do not skip. |
 | [docs/TRACE_FORMAT.md](docs/TRACE_FORMAT.md) | Native trace contract |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Modules and pipeline |
-| [docs/COMPETITORS.md](docs/COMPETITORS.md) | Market scan |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Locked decisions |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, tests, pull requests |
 | [CHANGELOG.md](CHANGELOG.md) | Shipped versions |
