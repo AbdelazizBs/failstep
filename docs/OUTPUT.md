@@ -10,7 +10,7 @@ Three formats, one set of facts:
 | json | CI, scripts, editors | `--format json` |
 | markdown | GitHub comments | `--format markdown` |
 
-`--format` is the only switch. No `--pretty`, no `--verbose` in V1. `inspect` is the verbose view of the run. `diagnose` is the verdict.
+`--format` is the only switch. No `--pretty`, no `--verbose` in V1. `inspect` is the verbose view of the run. `diagnose` is the verdict. `compare` is counted diffs between two diagnosed runs.
 
 Color: auto. Off when not a TTY, when `NO_COLOR` is set, or when `--format json|markdown`. ASCII only. No emoji. No spinner.
 
@@ -172,6 +172,42 @@ _none_
 ```
 
 No HTML. No badge images.
+
+## Compare — terminal
+
+```text
+failstep 0.1.0
+old          examples/traces/retry-loop.json
+new          examples/traces/success.json
+
+root cause
+  old  FS004  retry loop
+  new  none
+
+findings
+  gone   FS004
+  added  none
+  same   none
+
+run
+  status       failed -> success
+  steps        8 -> 4  (-4)
+  duration ms  14820 -> 2100  (-12720)
+  tokens in    4200 -> 800  (-3400)
+  tokens out   800 -> 120  (-680)
+```
+
+Rules:
+
+- Labels stay 12 characters. Values start at column 14.
+- Finding ids only. No evidence dump, no recommendation rewrite, no prose "improved".
+- Integer fields print `old -> new  (signed delta)`. Status has no delta.
+- A field missing on either side is omitted. Do not invent `0`.
+- Identical files: `gone`/`added`/`same`/`run` are `none` except `same` lists ids that exist on both.
+
+JSON field names: `old`, `new`, `diff.findings.{gone,added,same}`, `diff.root_cause.{old,new}`, `diff.run[]` with `key`/`old`/`new`/`delta`.
+
+Exit 1 when any finding id or printed run field changed. Exit 0 when there is no diff.
 
 ## Inspect — terminal
 

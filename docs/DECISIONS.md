@@ -54,7 +54,9 @@ Detectors first. LLM leftover is Phase 4, shipped, opt-in via `FAILSTEP_LLM_URL`
 
 ## V1 commands
 
-`inspect`, `diagnose`, `version`.
+`inspect`, `diagnose`, `compare`, `version`.
+
+`compare` diagnoses both files with leftover off, then counts finding-id diffs and run field diffs (`status`, `steps`, `duration_ms`, `tokens_in`, `tokens_out`). Missing numbers stay missing. Exit 1 if anything changed, 0 if identical, 2 on garbage.
 
 ## V1 detectors
 
@@ -96,4 +98,4 @@ https://github.com/AbdelazizBs/failstep.git
 
 ## Next
 
-Phase 5 is done. RAG detectors are deterministic. Freeze. Phase 6 is compare, not started.
+Phase 6 is done. `compare` is counted diffs only. Freeze. Phase 7 is fix suggestions, not started.

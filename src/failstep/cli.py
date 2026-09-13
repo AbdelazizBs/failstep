@@ -7,11 +7,15 @@ from pathlib import Path
 import typer
 
 from failstep import __version__
+from failstep.compare import compare_reports
 from failstep.diagnose import diagnose as diagnose_run
 from failstep.errors import ParseError
 from failstep.models import Report, Severity
 from failstep.parser import load_run
 from failstep.report import (
+    format_compare_json,
+    format_compare_markdown,
+    format_compare_terminal,
     format_diagnose_json,
     format_diagnose_markdown,
     format_diagnose_terminal,
@@ -157,6 +161,36 @@ def diagnose(
     code = _exit_for(report, fail_on)
     if code:
         raise typer.Exit(code)
+
+
+@app.command()
+def compare(
+    old: Path = typer.Argument(..., help="Older trace file."),
+    new: Path = typer.Argument(..., help="Newer trace file."),
+    output_format: OutputFormat = typer.Option(
+        OutputFormat.terminal,
+        "--format",
+        help="terminal, json, or markdown.",
+    ),
+) -> None:
+    """Count diffs between two diagnosed runs. Never calls leftover."""
+    old_run = _load(old, output_format)
+    new_run = _load(new, output_format)
+    try:
+        result = compare_reports(
+            diagnose_run(old_run, _display_path(old), no_llm=True),
+            diagnose_run(new_run, _display_path(new), no_llm=True),
+        )
+    except Exception:
+        _emit_internal(output_format)
+    if output_format is OutputFormat.json:
+        sys.stdout.write(format_compare_json(result, __version__))
+    elif output_format is OutputFormat.markdown:
+        sys.stdout.write(format_compare_markdown(result, __version__))
+    else:
+        sys.stdout.write(format_compare_terminal(result, __version__))
+    if result.has_diff():
+        raise typer.Exit(1)
 
 
 @app.command()

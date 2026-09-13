@@ -104,15 +104,26 @@ python -m failstep diagnose tests/traces/retrieval-then-fail.json
 
 Empty+duplicate dump → FS006 root, FS007 secondary, no FS008. Structured `refunds` true/false → FS008. Tool failure after a healthy retrieval stays FS003.
 
-Freeze. Do not start Phase 6 until someone says go.
-
 ---
 
-## Phase 6 — Compare
+## Phase 6 — Compare (done)
 
 `failstep compare old.json new.json`
 
-Counted diffs only. JSON + terminal goldens.
+Counted diffs only: finding ids gone/added/same, root-cause ids, and run fields that exist on both sides. Leftover is never called. Missing duration is not invented.
+
+Gate (green, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m failstep compare examples/traces/retry-loop.json examples/traces/success.json
+python -m failstep compare examples/traces/success.json examples/traces/success.json
+```
+
+Retry vs success → exit 1, gone FS004, status failed → success, steps 8 → 4. Identical success files → exit 0.
+
+Freeze. Do not start Phase 7 until someone says go.
 
 ---
 

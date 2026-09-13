@@ -104,6 +104,7 @@ No Docker. No cloud account.
 - Zero config file for V1
 - One positional path
 - Flags: `--format`, `--fail-on`, `--no-llm`, `--no-redact`
+- `compare` takes two paths. No leftover. Counted diffs only.
 - Garbage input: exit 2, point at `docs/TRACE_FORMAT.md`
 - ASCII-safe terminal (this machine is Windows)
 - JSON field names frozen by tests

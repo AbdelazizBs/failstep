@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from failstep.compare import CompareResult, FieldDelta
 from failstep.errors import ParseError
 from failstep.evidence import format_step_range
 from failstep.models import Finding, Report, Run, Step
@@ -186,6 +187,93 @@ def format_diagnose_markdown(report: Report, version: str) -> str:
             lines.append(bit)
     else:
         lines.append("_none_")
+    return "\n".join(lines) + "\n"
+
+
+
+def format_compare_terminal(result: CompareResult, version: str) -> str:
+    lines = [
+        f"failstep {version}",
+        _label("old", result.old_file),
+        _label("new", result.new_file),
+        "",
+        "root cause",
+        f"  old  {_root_line(result.old_root)}",
+        f"  new  {_root_line(result.new_root)}",
+        "",
+        "findings",
+    ]
+    width = max(len("gone"), len("added"), len("same"))
+    lines.append(f"  {'gone':<{width}}  {_id_list(result.gone)}")
+    lines.append(f"  {'added':<{width}}  {_id_list(result.added)}")
+    lines.append(f"  {'same':<{width}}  {_id_list(result.same)}")
+    lines.append("")
+    lines.append("run")
+    if not result.run:
+        lines.append("  none")
+    else:
+        field_w = max(len(_evidence_label(item.key)) for item in result.run)
+        for item in result.run:
+            label = _evidence_label(item.key)
+            lines.append(f"  {label:<{field_w}}  {_delta_text(item)}")
+    return "\n".join(lines) + "\n"
+
+
+def format_compare_json(result: CompareResult, version: str) -> str:
+    payload = {
+        "schema_version": 1,
+        "tool": "failstep",
+        "tool_version": version,
+        "old": _compare_side(
+            result.old_file, result.old_run, result.old_root, result.old_ids
+        ),
+        "new": _compare_side(
+            result.new_file, result.new_run, result.new_root, result.new_ids
+        ),
+        "diff": {
+            "findings": {
+                "gone": list(result.gone),
+                "added": list(result.added),
+                "same": list(result.same),
+            },
+            "root_cause": {
+                "old": result.old_root.id if result.old_root else None,
+                "new": result.new_root.id if result.new_root else None,
+            },
+            "run": [_delta_json(item) for item in result.run],
+        },
+    }
+    return json.dumps(payload, indent=2, ensure_ascii=True) + "\n"
+
+
+def format_compare_markdown(result: CompareResult, version: str) -> str:
+    lines = [
+        f"## failstep {version}",
+        f"`{result.old_file}` -> `{result.new_file}`",
+        "",
+        "### Root cause",
+        f"old {_root_md(result.old_root)} · new {_root_md(result.new_root)}",
+        "",
+        "### Findings",
+        "| | |",
+        "|---|---|",
+        f"| gone | {_id_list(result.gone)} |",
+        f"| added | {_id_list(result.added)} |",
+        f"| same | {_id_list(result.same)} |",
+        "",
+        "### Run",
+    ]
+    if not result.run:
+        lines.append("_none_")
+    else:
+        lines.append("| field | old | new | delta |")
+        lines.append("|---|---:|---:|---:|")
+        for item in result.run:
+            delta = "" if item.delta is None else str(item.delta)
+            lines.append(
+                f"| {_evidence_label(item.key)} | {_render_value(item.old)} | "
+                f"{_render_value(item.new)} | {delta} |"
+            )
     return "\n".join(lines) + "\n"
 
 
@@ -377,3 +465,51 @@ def _wrap(text: str, width: int) -> list[str]:
     if current:
         lines.append(current)
     return lines or [text]
+
+
+def _compare_side(
+    file_display: str,
+    run: Run,
+    root: Finding | None,
+    ids: tuple[str, ...],
+) -> dict[str, Any]:
+    return {
+        "file": file_display,
+        "run": _run_summary(run),
+        "root_cause": root.id if root else None,
+        "findings": list(ids),
+    }
+
+
+def _root_line(finding: Finding | None) -> str:
+    if finding is None:
+        return "none"
+    return f"{finding.id}  {finding.title}"
+
+
+def _root_md(finding: Finding | None) -> str:
+    if finding is None:
+        return "_none_"
+    return f"**{finding.id} {finding.title}**"
+
+
+def _id_list(ids: tuple[str, ...]) -> str:
+    return ", ".join(ids) if ids else "none"
+
+
+def _delta_text(item: FieldDelta) -> str:
+    body = f"{_render_value(item.old)} -> {_render_value(item.new)}"
+    if item.delta is None:
+        return body
+    return f"{body}  ({item.delta:+d})"
+
+
+def _delta_json(item: FieldDelta) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "key": item.key,
+        "old": item.old,
+        "new": item.new,
+    }
+    if item.delta is not None:
+        payload["delta"] = item.delta
+    return payload

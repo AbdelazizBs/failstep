@@ -111,10 +111,11 @@ JSON field names are a contract. Tests freeze them. A silent "healthy" on garbag
 ```text
 failstep inspect TRACE
 failstep diagnose TRACE [--format terminal|json|markdown] [--no-llm] [--no-redact] [--fail-on error|warning]
+failstep compare OLD NEW [--format terminal|json|markdown]
 failstep version
 ```
 
-Not in V1: `explain`, `compare`, `fix`, `serve`, `init`, capture SDK.
+Not in V1: `explain`, `fix`, `serve`, `init`, capture SDK.
 
 ## V1 detectors
 

@@ -62,6 +62,7 @@ python -m failstep version
 ```text
 failstep inspect TRACE [--format terminal|json|markdown]
 failstep diagnose TRACE [--format terminal|json|markdown] [--fail-on error|warning] [--no-llm] [--no-redact]
+failstep compare OLD NEW [--format terminal|json|markdown]
 failstep version
 ```
 

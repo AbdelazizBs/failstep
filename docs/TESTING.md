@@ -28,6 +28,7 @@ tests/
   test_otel.py
   test_llm.py
   test_redact.py
+  test_compare.py
   test_honesty.py
   test_detectors/
   goldens/
@@ -49,6 +50,9 @@ tests/
     retrieval-silent.json
     retrieval-silent.md
     empty-retrieval.terminal.txt
+    compare-retry-loop.terminal.txt
+    compare-retry-loop.json
+    compare-retry-loop.md
 ```
 
 `examples/traces/` is the product demo. `tests/traces/` can be ugly. Do not put secrets in either.
@@ -169,6 +173,15 @@ python -m failstep diagnose tests/traces/retrieval-silent.json
 
 `retrieval-silent.json` is FS006 then FS007, never FS008, never hallucination. `retrieval-conflict.json` is FS008 on `refunds`. `retrieval-conflict-silent.json` (different texts, no shared field) stays empty. `retrieval-then-fail.json` stays FS003.
 
+### Phase 6 (done)
+
+```text
+python -m pytest
+python -m failstep compare examples/traces/retry-loop.json examples/traces/success.json
+```
+
+Retry vs success is gone FS004, counted duration/steps/tokens. Identical files exit 0. Leftover is never called even if `FAILSTEP_LLM_URL` is set. Missing duration is omitted, not zero. Garbage still exits 2.
+
 ### Phase 8
 
 GitHub Actions: pytest + ruff on 3.11, 3.12, 3.13. Windows + Ubuntu. That is when "it works on my machine" stops being an argument.
@@ -184,7 +197,7 @@ python -m pytest
 
 Same with `uv run` if that is how you installed.
 
-No coverage theater. We do not chase 100%. We chase: parser, eight detectors, leftover LLM, three report formats, four exit codes.
+No coverage theater. We do not chase 100%. We chase: parser, eight detectors, leftover LLM, compare diffs, three report formats, four exit codes.
 
 ## What a detector PR must include
 

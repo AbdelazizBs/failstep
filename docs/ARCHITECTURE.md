@@ -16,9 +16,11 @@ trace.json / trace.jsonl / otel.json
     normalize        Run + Step (Pydantic)
         |
         v
-    detectors        FS001-FS005, evidence only
+    detectors        FS001-FS008, evidence only
         |
         +-- findings --> report (one root cause + secondary)
+        |
+        +-- compare      two reports, counted diffs only
         |
         +-- no error finding
                  |
@@ -45,6 +47,7 @@ src/failstep/
     normalize.py
     evidence.py
     diagnose.py
+    compare.py
     report.py
     redact.py
     llm.py
