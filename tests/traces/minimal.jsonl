@@ -1,0 +1,3 @@
+{"run_id": "jsonl-agent", "status": "failed", "duration_ms": 500, "tokens_in": 10, "tokens_out": 2}
+{"id": "step_1", "type": "tool", "name": "ping", "input": {"host": "api"}, "output": null, "error": "timeout", "latency_ms": 10}
+{"id": "step_2", "type": "llm", "name": "answer", "input": null, "output": "the tool timed out", "error": null, "latency_ms": 40}

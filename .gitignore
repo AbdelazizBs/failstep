@@ -1,15 +1,64 @@
+# Python
 .venv/
+venv/
+env/
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+dist/
+build/
+wheels/
+pip-wheel-metadata/
+
+# Test / lint / type / coverage
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
-dist/
-build/
-*.egg-info/
 .coverage
+.coverage.*
 htmlcov/
+coverage.xml
+.tox/
+.nox/
+.hypothesis/
+.cache/
+
+# uv (lock is optional for a library CLI; pyproject is the source of truth)
 .uv/
 uv.lock
+
+# Env / secrets — never publish
+.env
+
+.env.*
+!.env.example
+*.pem
+*.key
+
+# OS
 .DS_Store
 Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.orig
+
+# Local leftovers — never publish
+MOVED.md
+_chatgpt_share*
+*.tmp
+*.temp
+~$*
+
+# Jupyter
+.ipynb_checkpoints/

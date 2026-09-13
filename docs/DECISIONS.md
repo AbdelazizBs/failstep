@@ -84,4 +84,5 @@ https://github.com/AbdelazizBs/failstep.git
 
 ## Next
 
-Read PRODUCT, POSITIONING, OUTPUT, TESTING, PHASES. Approve. Then Phase 1 only.
+Phase 1 is done. Phase 2 is detectors FS001–FS005 and real `diagnose`.
+

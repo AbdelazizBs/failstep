@@ -2,7 +2,7 @@
 
 Do not skip. Do not implement the next phase until the current **gate command** is green.
 
-This file is the build order. Implementation has **not** started.
+This file is the build order.
 
 How we test: `docs/TESTING.md`.
 How a report must look: `docs/OUTPUT.md`.
@@ -13,35 +13,26 @@ How a report must look: `docs/OUTPUT.md`.
 
 Delivered: product, positioning, stack, architecture, trace format, decisions, testing, output, this file. Name: **failstep**. Git remote: `https://github.com/AbdelazizBs/failstep.git`.
 
-Stop. You read. You approve. Then Phase 1.
-
 ---
 
-## Phase 1 — Scaffold that inspects a file
+## Phase 1 — Scaffold that inspects a file (done)
 
-Goal: a real installable CLI that prints a run. No diagnosis yet.
+Installable CLI. Native JSON + JSONL. `inspect` prints the run. `diagnose` does not invent a finding.
 
-1. `pyproject.toml`: package `failstep`, script `failstep = failstep.cli:app`, `python -m failstep`
-2. `src/failstep/` with `cli.py`, `models.py`, `parser.py`, `normalize.py`, `report.py`
-3. Native JSON parser (`TRACE_FORMAT.md`). Garbage file = exit 2, message from `OUTPUT.md`
-4. `failstep inspect` matches the inspect layout in `OUTPUT.md`
-5. `failstep version` prints `failstep 0.1.0`
-6. `failstep diagnose` on a valid file: no fake finding. Message: detectors land in Phase 2. Exit 0.
-7. pytest: parse native JSON, parse JSONL, reject garbage, inspect golden, exit codes 0/2
-8. README 60-second inspect example (terminal block from the golden)
-9. Ruff clean
+Shipped: `pyproject.toml`, `src/failstep/` (`cli`, `models`, `parser`, `normalize`, `report`), examples, pytest, ruff clean.
 
-Gate:
+Gate (green, 2026-09-13):
 
 ```text
-uv run pytest tests/test_parser.py tests/test_inspect.py tests/test_cli_exit.py
-uv run ruff check .
-uv run failstep inspect examples/traces/retry-loop.json
+python -m pytest tests/test_parser.py tests/test_inspect.py tests/test_cli_exit.py
+python -m ruff check .
+python -m failstep inspect examples/traces/retry-loop.json
 ```
 
-Inspect must show run id, status, duration, and each step type/name.
+`diagnose` on a valid file: "No detectors shipped yet. Use inspect, or wait for Phase 2." Exit 0. Garbage: exit 2.
 
 No LLM. No OTEL. No detectors.
+
 
 ---
 

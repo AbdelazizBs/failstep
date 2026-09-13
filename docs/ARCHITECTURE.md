@@ -29,26 +29,20 @@ trace.json / trace.jsonl / otel.json
               report or "Insufficient evidence."
 ```
 
-## Layout (Phase 1+)
+## Layout
+
+Phase 1 (shipped):
 
 ```text
 src/failstep/
     __init__.py
+    __main__.py
     cli.py
+    errors.py
     models.py
     parser.py
     normalize.py
-    diagnose.py
     report.py
-    redact.py
-    llm.py
-    detectors/
-        base.py
-        malformed.py
-        schema.py
-        tool_error.py
-        retry.py
-        timeout.py
 
 tests/
 examples/traces/
@@ -58,7 +52,10 @@ README.md
 LICENSE
 ```
 
+Later, not created yet: `diagnose.py`, `redact.py`, `llm.py`, `detectors/`.
+
 Phase 1 does not create a providers package or FastAPI. `report.py` is enough.
+
 
 ## Internal model
 

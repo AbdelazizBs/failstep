@@ -177,27 +177,32 @@ No HTML. No badge images.
 
 A table of what happened. No verdict.
 
+Labels are 12 characters, then a space, then the value (column 14).
+`type` is 9 characters so `retrieval` fits. Names longer than 16 characters are truncated with `...`.
+
 ```text
 failstep 0.1.0
-file     examples/traces/retry-loop.json
-run      checkout-agent
-status   failed
-duration 14820 ms
-steps    8
-tokens   4200 in / 800 out
+file         examples/traces/retry-loop.json
+run          checkout-agent
+status       failed
+duration     14820 ms
+steps        8
+tokens       4200 in / 800 out
 
-step  type  name           latency  error
-   1  llm   plan              210ms
-   2  tool  get_customer      120ms  customer_id is required
-   3  tool  search_docs        80ms
-   4  tool  search_docs        80ms
-   5  tool  search_docs        80ms
-   6  llm   answer            400ms
+step  type       name              latency  error
+   1  llm        plan                210ms
+   2  tool       get_customer        120ms  customer_id is required
+   3  tool       search_docs          80ms
+   4  tool       search_docs          80ms
+   5  tool       search_docs          80ms
+   6  llm        think               350ms
+   7  tool       get_customer        110ms  customer_id is required
+   8  llm        answer              400ms
 ```
 
-Truncate `error` at 40 characters with `...`. Full text is in diagnose evidence, or in `--format json` inspect (Phase 1 JSON inspect is allowed: dump the normalized `Run`).
+Truncate `error` at 40 characters with `...`. Full text is in `--format json` inspect (normalized run) or, later, in diagnose evidence.
 
-Columns are right-aligned for numbers, left for names. If a name is longer than 16 chars, truncate.
+Columns are right-aligned for numbers, left for names.
 
 ## Errors (all formats)
 

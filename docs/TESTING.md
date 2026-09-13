@@ -26,10 +26,13 @@ tests/
   test_diagnose.py        Phase 2
   test_detectors/         one file per FS00x
   goldens/
-    retry-loop.terminal.txt
+    inspect-retry-loop.terminal.txt
+    inspect-retry-loop.json
+    retry-loop.terminal.txt   Phase 2 diagnose
     retry-loop.json
     retry-loop.md
 ```
+
 
 `examples/traces/` is the product demo. `tests/traces/` can be ugly. Do not put secrets in either.
 
@@ -93,13 +96,15 @@ No emoji. No color when stdout is not a TTY (`NO_COLOR` / non-tty). Tests run no
 
 Do not start the next phase until the gate command is green.
 
-### Phase 1
+### Phase 1 (done)
 
 ```text
-uv run pytest tests/test_parser.py tests/test_inspect.py tests/test_cli_exit.py
-uv run failstep inspect examples/traces/retry-loop.json
-uv run failstep diagnose examples/traces/retry-loop.json
+python -m pytest tests/test_parser.py tests/test_inspect.py tests/test_cli_exit.py
+python -m failstep inspect examples/traces/retry-loop.json
+python -m failstep diagnose examples/traces/retry-loop.json
 ```
+
+`uv run ...` is the same commands if you develop with uv.
 
 Diagnose in Phase 1 must **not** invent a finding. It says detectors are not shipped yet, exit 0 on a valid file, exit 2 on garbage.
 
