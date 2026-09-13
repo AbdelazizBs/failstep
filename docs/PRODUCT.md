@@ -99,9 +99,9 @@ A stranger, no account, no key:
 
 ```text
 pip install failstep
-failstep diagnose examples/traces/retry-loop.json
+failstep diagnose TRACE.json
 ```
 
-sees the retry, the step indexes, the repeated arguments, and "stop retrying identical calls".
+On the bundled retry dump (`examples/traces/retry-loop.json` from a clone) they see the retry, the step indexes, the repeated arguments, and "stop retrying identical calls".
 
 If that is not true, V1 is not ready.

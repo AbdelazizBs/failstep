@@ -1,4 +1,4 @@
-## failstep 0.1.1
+## failstep 0.1.2
 `examples/traces/retry-loop.json` -> `examples/traces/success.json`
 
 ### Root cause

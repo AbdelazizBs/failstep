@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "tool": "failstep",
-  "tool_version": "0.1.1",
+  "tool_version": "0.1.2",
   "old": {
     "file": "examples/traces/retry-loop.json",
     "run": {
