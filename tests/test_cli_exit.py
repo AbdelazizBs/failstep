@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_version(runner: CliRunner) -> None:
     result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
-    assert result.stdout.strip() == "failstep 0.1.0"
+    assert result.stdout.strip() == "failstep 0.1.1"
 
 
 def test_missing_file_exit_2(runner: CliRunner, tmp_path: Path) -> None:

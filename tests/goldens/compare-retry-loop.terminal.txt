@@ -1,4 +1,4 @@
-failstep 0.1.0
+failstep 0.1.1
 old          examples/traces/retry-loop.json
 new          examples/traces/success.json
 

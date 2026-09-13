@@ -1,4 +1,4 @@
-## failstep 0.1.0
+## failstep 0.1.1
 `tests/traces/multi-failure.json` · run `support-agent` · success · 18500 ms · 25 steps
 
 ### Root cause

@@ -27,7 +27,7 @@ python -m failstep diagnose examples/traces/retry-loop.json
 ```
 
 ```text
-failstep 0.1.0
+failstep 0.1.1
 file         examples/traces/retry-loop.json
 run          checkout-agent
 status       failed

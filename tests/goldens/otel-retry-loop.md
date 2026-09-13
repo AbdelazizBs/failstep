@@ -1,4 +1,4 @@
-## failstep 0.1.0
+## failstep 0.1.1
 `examples/traces/otel-retry-loop.json` · run `checkout-agent` · failed · 14820 ms · 5 steps
 
 ### Root cause
