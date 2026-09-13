@@ -38,7 +38,15 @@ No invented confidence, cost, or quality. `Insufficient evidence.` when the file
 
 ## Stack
 
-Python 3.12, uv, Typer, Rich, Pydantic v2, pytest, ruff. Runtime deps: those three libraries only. See STACK.md.
+Python **3.11+** (not 3.12-only). Users install with **pip**. We develop with **uv**. Hatchling, src layout.
+
+CLI: Typer. Terminal: Rich. Models: Pydantic v2. Tests: pytest. Lint: ruff.
+
+V1 runtime deps: typer, rich, pydantic. See STACK.md.
+
+Doors we keep, deps we do not take yet: parser adapters, OTEL-as-JSON, `failstep[llm]` + httpx in Phase 4, `python -m failstep`.
+
+Not Python 3.12-only: too many conda/company images still on 3.11, and we would lose them for no feature.
 
 ## LLM
 

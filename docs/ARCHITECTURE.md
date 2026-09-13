@@ -2,7 +2,7 @@
 
 V1 is a local CLI. No server. No database. No UI.
 
-Package and command: **failstep**.
+Package and command: **failstep**. Python 3.11+, pip-installable, `python -m failstep` as backup.
 
 ## Pipeline
 

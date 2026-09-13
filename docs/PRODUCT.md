@@ -3,6 +3,7 @@
 Name: **failstep**
 Command: `failstep`
 PyPI: `failstep` (404 on 2026-09-13 — available)
+Requires: Python 3.11+, `pip install failstep` (uv optional)
 GitHub user/org `failstep`: 404. Search: 0 repos.
 
 Tagline:
