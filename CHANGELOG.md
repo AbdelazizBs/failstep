@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.1
+
 - Drop competitor comparison docs. Product docs describe failstep only.
 - Ignore local venvs, recordings, and private traces so they stay off git and PyPI.
 

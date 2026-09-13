@@ -30,7 +30,7 @@ One **root cause**. Secondary findings after it, shorter.
 ## Diagnose — terminal
 
 ```text
-failstep 0.1.0
+failstep 0.1.1
 file     examples/traces/retry-loop.json
 run      checkout-agent
 status   failed
@@ -65,7 +65,7 @@ Rules:
 - A clean run:
 
 ```text
-failstep 0.1.0
+failstep 0.1.1
 file     examples/traces/success.json
 run      checkout-agent
 status   success
@@ -95,7 +95,7 @@ Frozen field names. Versioned. Tests compare this object.
 {
   "schema_version": 1,
   "tool": "failstep",
-  "tool_version": "0.1.0",
+  "tool_version": "0.1.1",
   "file": "examples/traces/retry-loop.json",
   "run": {
     "id": "checkout-agent",
@@ -176,7 +176,7 @@ No HTML. No badge images.
 ## Compare — terminal
 
 ```text
-failstep 0.1.0
+failstep 0.1.1
 old          examples/traces/retry-loop.json
 new          examples/traces/success.json
 
@@ -212,7 +212,7 @@ Exit 1 when any finding id or printed run field changed. Exit 0 when there is no
 ## Fix — terminal
 
 ```text
-failstep 0.1.0
+failstep 0.1.1
 file         examples/traces/retry-loop.json
 run          checkout-agent
 
@@ -242,7 +242,7 @@ Labels are 12 characters, then a space, then the value (column 14).
 `type` is 9 characters so `retrieval` fits. Names longer than 16 characters are truncated with `...`.
 
 ```text
-failstep 0.1.0
+failstep 0.1.1
 file         examples/traces/retry-loop.json
 run          checkout-agent
 status       failed

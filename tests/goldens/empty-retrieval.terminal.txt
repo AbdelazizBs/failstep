@@ -1,4 +1,4 @@
-failstep 0.1.0
+failstep 0.1.1
 file         examples/traces/empty-retrieval.json
 run          checkout-agent
 status       failed

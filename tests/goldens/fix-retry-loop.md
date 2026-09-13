@@ -1,4 +1,4 @@
-## failstep 0.1.0
+## failstep 0.1.1
 `examples/traces/retry-loop.json` · run `checkout-agent`
 
 ### Patch
