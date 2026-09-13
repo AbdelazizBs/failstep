@@ -34,7 +34,7 @@ trace.json / trace.jsonl / otel.json
 
 ## Layout
 
-Phase 6 (shipped). `compare` counts diffs. `fix` prints the recommendation and does not write files.
+Phase 8 (shipped). CI, sdist/wheel, changelog, contributing, issue templates.
 
 ```text
 src/failstep/
@@ -64,8 +64,11 @@ src/failstep/
 tests/
 examples/traces/
 docs/
+.github/
 pyproject.toml
 README.md
+CONTRIBUTING.md
+CHANGELOG.md
 LICENSE
 ```
 

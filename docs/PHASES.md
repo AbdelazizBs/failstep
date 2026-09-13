@@ -140,15 +140,23 @@ python -m failstep fix examples/traces/success.json
 
 Retry dump → exit 1, patch FS004, cap retries. Success dump → exit 0, patch none. Trace file bytes stay unchanged.
 
-Freeze. Do not start Phase 8 until someone says go.
-
 ---
 
-## Phase 8 — Release
+## Phase 8 — Release (done)
 
 GitHub Actions: pytest + ruff, Python 3.11/3.12/3.13, Ubuntu + Windows.
 
-PyPI packaging, CONTRIBUTING, issue templates, changelog.
+PyPI packaging (`python -m build`), CONTRIBUTING, issue templates, changelog. Publish runs on a GitHub Release only after a `pypi` environment and trusted publisher exist.
+
+Gate (green locally, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m build
+```
+
+V1 freeze. There is no Phase 9 in this file.
 
 ---
 

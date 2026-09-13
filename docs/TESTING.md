@@ -31,6 +31,7 @@ tests/
   test_compare.py
   test_fix.py
   test_honesty.py
+  test_release.py
   test_detectors/
   goldens/
     inspect-retry-loop.terminal.txt
@@ -196,11 +197,15 @@ python -m failstep fix examples/traces/retry-loop.json
 
 The patch is the FS004 recommendation. Success is `patch none`, exit 0. The trace file is not rewritten. Leftover is never called. Garbage exits 2.
 
-### Phase 8
+### Phase 8 (done)
 
-GitHub Actions: pytest + ruff on 3.11, 3.12, 3.13. Windows + Ubuntu. That is when "it works on my machine" stops being an argument.
+```text
+python -m pytest
+python -m ruff check .
+python -m build
+```
 
-Until then, run pytest before every push.
+GitHub Actions: pytest + ruff on 3.11, 3.12, 3.13. Windows + Ubuntu. Wheel and sdist build on Ubuntu. Publish is a separate workflow on GitHub Release, not a default path.
 
 ## Commands we always run before a push
 

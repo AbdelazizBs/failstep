@@ -36,11 +36,14 @@ dev = [
   "pytest>=8.0",
   "ruff>=0.6",
   "httpx>=0.27",
+  "build>=1.2",
 ]
 
 [project.urls]
 Homepage = "https://github.com/AbdelazizBs/failstep"
 Repository = "https://github.com/AbdelazizBs/failstep"
+Issues = "https://github.com/AbdelazizBs/failstep/issues"
+Changelog = "https://github.com/AbdelazizBs/failstep/blob/master/CHANGELOG.md"
 
 [project.scripts]
 failstep = "failstep.cli:app"

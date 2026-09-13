@@ -13,6 +13,8 @@ No API key. No network. A root cause, quoted evidence, and what to change.
 
 Repo: [github.com/AbdelazizBs/failstep](https://github.com/AbdelazizBs/failstep)
 
+[![CI](https://github.com/AbdelazizBs/failstep/actions/workflows/ci.yml/badge.svg)](https://github.com/AbdelazizBs/failstep/actions/workflows/ci.yml)
+
 `inspect` prints the run. `diagnose` names the failed step. `compare` counts diffs. `fix` prints the recommendation.
 
 ## 60 seconds
@@ -95,6 +97,8 @@ If you use uv: `uv sync --extra dev` then `uv run pytest` / `uv run ruff check .
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Modules and pipeline |
 | [docs/COMPETITORS.md](docs/COMPETITORS.md) | Market scan |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Locked decisions |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, tests, pull requests |
+| [CHANGELOG.md](CHANGELOG.md) | Shipped versions |
 
 ## License
 

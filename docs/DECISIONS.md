@@ -92,7 +92,7 @@ JSON field names are a contract (`schema_version: 1`).
 Pytest from Phase 1. Golden traces + frozen reports. Exit codes 0/1/2/3 asserted.
 A finding's evidence must appear in the fixture file. Spec: `TESTING.md`.
 
-CI (Actions, 3.11-3.13, Windows+Ubuntu) is Phase 8. Until then, run pytest before every push.
+CI (Actions, 3.11-3.13, Windows+Ubuntu) is Phase 8, shipped. pytest + ruff on every pull request.
 
 ## Remote
 
@@ -100,4 +100,4 @@ https://github.com/AbdelazizBs/failstep.git
 
 ## Next
 
-Phase 7 is done. `fix` prints patches. Freeze. Phase 8 is release, not started.
+Phase 8 is done. CI, changelog, contributing, issue templates. V1 freeze.
