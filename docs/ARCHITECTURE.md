@@ -87,29 +87,11 @@ Root cause = highest severity, then this order.
 
 ## Output
 
+Contract: `docs/OUTPUT.md`. Tests freeze it (`docs/TESTING.md`).
+
 Terminal is the product. JSON is CI. Markdown is for GitHub comments.
 
-ASCII-safe. No required emoji.
-
-```text
-failstep
-Run: checkout-agent
-Status: failed
-Duration: 14820 ms
-Steps: 8
-
-Root cause  FS002 tool schema  (step 7, get_customer)
-Evidence
-  expected required: customer_id
-  received keys: email
-  step error: "customer_id is required"
-
-Secondary   FS004 retry loop  get_customer x3 same args
-
-Recommendation
-  Validate tool arguments against the schema before execution.
-  Stop retrying an identical failed call.
-```
+ASCII-safe. No required emoji. No confidence field. One root cause, then secondary.
 
 ## Security
 

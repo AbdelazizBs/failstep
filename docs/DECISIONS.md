@@ -64,6 +64,24 @@ FS001 malformed, FS002 schema, FS003 tool failure, FS004 retry, FS005 timeout.
 
 Native JSON/JSONL now. OpenAI messages + LangChain intermediate_steps sniff in Phase 2. OTEL in Phase 3.
 
+## Report
+
+Three formats, one fact set: terminal, json, markdown. Spec: `OUTPUT.md`.
+
+No confidence, no cost, no grade, no emoji. One root cause. Recommendation is imperative.
+JSON field names are a contract (`schema_version: 1`).
+
+## Tests
+
+Pytest from Phase 1. Golden traces + frozen reports. Exit codes 0/1/2/3 asserted.
+A finding's evidence must appear in the fixture file. Spec: `TESTING.md`.
+
+CI (Actions, 3.11–3.13, Windows+Ubuntu) is Phase 8. Until then, run pytest on this Windows box before every push.
+
+## Remote
+
+https://github.com/AbdelazizBs/failstep.git
+
 ## Next
 
-Read PRODUCT, POSITIONING, PHASES. Approve. Then Phase 1 only.
+Read PRODUCT, POSITIONING, OUTPUT, TESTING, PHASES. Approve. Then Phase 1 only.

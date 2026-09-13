@@ -1,25 +1,17 @@
 # Phases
 
-Do not skip. Do not implement the next phase until the current one is demonstrable.
+Do not skip. Do not implement the next phase until the current **gate command** is green.
 
 This file is the build order. Implementation has **not** started.
+
+How we test: `docs/TESTING.md`.
+How a report must look: `docs/OUTPUT.md`.
 
 ---
 
 ## Phase 0 — Research and lock (done)
 
-Delivered:
-
-- `docs/COMPETITORS.md`
-- `docs/POSITIONING.md`
-- `docs/PRODUCT.md`
-- `docs/STACK.md`
-- `docs/ARCHITECTURE.md`
-- `docs/TRACE_FORMAT.md`
-- `docs/DECISIONS.md`
-- this file
-- name: **failstep**
-- git repo initialized, docs only
+Delivered: product, positioning, stack, architecture, trace format, decisions, testing, output, this file. Name: **failstep**. Git remote: `https://github.com/AbdelazizBs/failstep.git`.
 
 Stop. You read. You approve. Then Phase 1.
 
@@ -27,25 +19,27 @@ Stop. You read. You approve. Then Phase 1.
 
 ## Phase 1 — Scaffold that inspects a file
 
-Goal: a real installable CLI that prints a run, no diagnosis yet.
+Goal: a real installable CLI that prints a run. No diagnosis yet.
 
-1. `pyproject.toml`: package `failstep`, script `failstep = failstep.cli:app`
+1. `pyproject.toml`: package `failstep`, script `failstep = failstep.cli:app`, `python -m failstep`
 2. `src/failstep/` with `cli.py`, `models.py`, `parser.py`, `normalize.py`, `report.py`
-3. Native JSON parser (TRACE_FORMAT.md). Garbage file = exit 2.
-4. `failstep inspect examples/traces/retry-loop.json` prints the step table
-5. `failstep version`
-6. `failstep diagnose` exists but says detectors land in Phase 2 (or returns "no detectors yet") — do not fake a diagnosis
-7. pytest: parse native JSON, parse JSONL, reject garbage
-8. README 60-second inspect example
+3. Native JSON parser (`TRACE_FORMAT.md`). Garbage file = exit 2, message from `OUTPUT.md`
+4. `failstep inspect` matches the inspect layout in `OUTPUT.md`
+5. `failstep version` prints `failstep 0.1.0`
+6. `failstep diagnose` on a valid file: no fake finding. Message: detectors land in Phase 2. Exit 0.
+7. pytest: parse native JSON, parse JSONL, reject garbage, inspect golden, exit codes 0/2
+8. README 60-second inspect example (terminal block from the golden)
 9. Ruff clean
 
-Done when:
+Gate:
 
 ```text
+uv run pytest tests/test_parser.py tests/test_inspect.py tests/test_cli_exit.py
+uv run ruff check .
 uv run failstep inspect examples/traces/retry-loop.json
 ```
 
-shows run id, status, duration, and each step type/name.
+Inspect must show run id, status, duration, and each step type/name.
 
 No LLM. No OTEL. No detectors.
 
@@ -56,40 +50,34 @@ No LLM. No OTEL. No detectors.
 This is the product.
 
 1. Detectors FS001–FS005
-2. `failstep diagnose TRACE` with terminal / json / markdown
+2. `failstep diagnose TRACE` terminal / json / markdown — **exactly** `OUTPUT.md`
 3. `--fail-on`, exit codes 0/1/2/3
-4. Golden traces:
-   - `schema-mismatch.json`
-   - `retry-loop.json`
-   - `malformed-json.json`
-   - `tool-failure.json`
-   - `timeout.json`
-   - `success.json`
-5. Format sniff (still no SDK):
-   - native failstep JSON
-   - OpenAI-style `messages` + `tool_calls`
-   - LangChain-style `intermediate_steps`
-   - unknown = exit 2 + hint
-6. Tests per detector: fire on fixture, stay quiet on success, never invent fields
-7. README diagnose example (text block is enough until Phase 8)
+4. Golden traces + frozen reports in `tests/goldens/`
+5. Format sniff (no SDK): native, OpenAI `messages` + `tool_calls`, LangChain `intermediate_steps`. Unknown = exit 2
+6. Tests per detector: fire, silent on success, evidence strings found in the fixture
+7. Honesty test: no `confidence` key, every `step_ids` exists
 
-Done when the success definition in PRODUCT.md is true **without an API key**.
+Gate:
 
-Freeze here. Do not start Phase 3 until someone other than you has run diagnose on a real dump.
+```text
+uv run pytest
+uv run failstep diagnose examples/traces/retry-loop.json
+uv run failstep diagnose examples/traces/retry-loop.json --format json
+```
+
+A stranger with no API key sees the retry, the steps, the args, and the cap-retries fix.
+
+Freeze. Do not start Phase 3 until someone other than you has run diagnose on a real dump.
 
 ---
 
 ## Phase 3 — OpenTelemetry ingest
 
-One adapter. Exported JSON spans. Map:
+One adapter. Exported JSON spans. Map `invoke_agent` / `chat` / `execute_tool` / `retrieval`.
 
-- `invoke_agent` / `chat` / `execute_tool` / `retrieval`
-- tool name, arguments, result, definitions
-- tokens, errors
+Gate: synthetic OTEL fixture → FS002 or FS004. New goldens. Mapping that drops a tool error fails the test.
 
 Not a live OTLP server.
-
-Done when `failstep diagnose otel-trace.json` hits FS002/FS004 on a synthetic OTEL fixture.
 
 ---
 
@@ -97,20 +85,15 @@ Done when `failstep diagnose otel-trace.json` hits FS002/FS004 on a synthetic OT
 
 Only if no detector produced `error`.
 
-- Provider protocol
-- Ollama + OpenAI-compatible
-- Redact before send
-- `--no-llm` default behavior stays "skip"
-- Model must quote evidence or return Insufficient evidence
-- Finding.source = `llm`
+Fake HTTP in tests. Redaction test must fail if `sk-` / `Bearer` leaves the machine. `--no-llm` still skips. `Finding.source = llm`.
 
-No hardcoded OpenAI. No sending the raw file.
+No hardcoded OpenAI. No raw file upload.
 
 ---
 
 ## Phase 5 — RAG detectors
 
-Empty retrieval, duplicate chunks, conflicting sources. Only when retrieval steps exist. Never claim factual correctness without evidence.
+Empty retrieval, duplicate chunks, conflicting sources. Only when retrieval steps exist. Same golden + honesty rules.
 
 ---
 
@@ -118,21 +101,23 @@ Empty retrieval, duplicate chunks, conflicting sources. Only when retrieval step
 
 `failstep compare old.json new.json`
 
-Counted diffs only: latency, tokens, LLM/tool counts, failures, retries.
+Counted diffs only. JSON + terminal goldens.
 
 ---
 
 ## Phase 7 — Fix suggestions
 
-`failstep fix trace.json` prints a suggested patch (tool description, retry cap). Does not write the user's source unless they pass an explicit flag later. V1 of fix is stdout only.
+`failstep fix trace.json` prints a suggested patch to stdout. Same voice as the recommendation line. Does not write the user's source.
 
 ---
 
 ## Phase 8 — Release
 
-PyPI, GitHub Actions (pytest + ruff), CONTRIBUTING, issue templates, changelog, 20s terminal recording, LinkedIn.
+GitHub Actions: pytest + ruff, Python 3.11/3.12/3.13, Ubuntu + Windows.
 
-Not before Phase 2 is boringly solid.
+PyPI, CONTRIBUTING, issue templates, changelog, 20s terminal recording, LinkedIn.
+
+Not before Phase 2 goldens are boring.
 
 ---
 
@@ -144,3 +129,4 @@ Not before Phase 2 is boringly solid.
 - Recover / rerun / self-heal
 - Health scores
 - Invented cost
+- Emoji in default output
