@@ -19,7 +19,7 @@ If a PR cannot name which of those it protects, it is not ready.
 ```text
 examples/traces/          product demos (README)
 tests/
-  traces/                 hard fixtures (openai, langchain, jsonl, traps, otel, leftover)
+  traces/                 hard fixtures (openai, langchain, jsonl, traps, otel, leftover, retrieval)
   test_parser.py
   test_inspect.py
   test_cli_exit.py
@@ -28,7 +28,10 @@ tests/
   test_otel.py
   test_llm.py
   test_redact.py
+  test_compare.py
+  test_fix.py
   test_honesty.py
+  test_release.py
   test_detectors/
   goldens/
     inspect-retry-loop.terminal.txt
@@ -45,6 +48,17 @@ tests/
     otel-retry-loop.json
     otel-retry-loop.md
     inspect-otel-retry-loop.terminal.txt
+    retrieval-silent.terminal.txt
+    retrieval-silent.json
+    retrieval-silent.md
+    empty-retrieval.terminal.txt
+    compare-retry-loop.terminal.txt
+    compare-retry-loop.json
+    compare-retry-loop.md
+    fix-retry-loop.terminal.txt
+    fix-retry-loop.json
+    fix-retry-loop.md
+    fix-success.terminal.txt
 ```
 
 `examples/traces/` is the product demo. `tests/traces/` can be ugly. Do not put secrets in either.
@@ -58,9 +72,10 @@ FS002    | missing/extra/wrong-type/null required args, validation error text | 
 FS003    | HTTP 4xx/5xx, empty error payload | schema errors, timeout text, success | recovered run still names the failed step | step error / http status copied
 FS004    | 3+ consecutive identical tool+args | 2 repeats, changed args, LLM between repeats | does not collapse similar queries | identical calls counted, args copied
 FS005    | step >=15000ms, timeout text, run >=30000ms, 80% dominate warning | healthy latencies | missing duration stays null, multiple timeouts keep the slowest | latency_ms / run_duration_ms from the file
+FS006    | retrieval step, zero documents or hits 0 | tool searches, missing document list with hits>0 | does not treat tool search_docs as retrieval | query, hits, chunks from the step
+FS007    | 2+ chunks with same id or source+text in one step | unique chunks, similar text with different ids | does not hash across steps | copies, source, text from the step
+FS008    | same scalar field, different values, same retrieval step | different free-text, different topics, one document | does not infer contradiction from prose | field, values, sources from the step
 ```
-
-Phase 5 owns empty retrieval and duplicate chunks. Those fixtures must stay silent today.
 
 ## Layers
 
@@ -104,9 +119,9 @@ Use Typer's `CliRunner`. Assert stdout **and** `exit_code`.
 
 `--format json` on a bad file still prints a small JSON error object, not a traceback. Tracebacks are for exit 3.
 
-### 4. Hands on this machine
+### 4. Manual CLI check
 
-Windows first. After the test suite is green:
+After the test suite is green:
 
 ```text
 python -m failstep inspect examples/traces/retry-loop.json
@@ -155,11 +170,42 @@ python -m failstep diagnose tests/traces/leftover-secret.json
 
 LLM tests use a fake HTTP server. No real API key in CI. `tests/traces/leftover-secret.json` contains `sk-test-example` and `Bearer secret-token`; those strings must not appear in the POST body. `--no-llm` skips. An error finding skips leftover. Invented step indexes drop the leftover finding.
 
-### Phase 8
+### Phase 5 (done)
 
-GitHub Actions: pytest + ruff on 3.11, 3.12, 3.13. Windows + Ubuntu. That is when "it works on my machine" stops being an argument.
+```text
+python -m pytest
+python -m failstep diagnose tests/traces/retrieval-silent.json
+```
 
-Until then, **you** run pytest on this Windows box before every push.
+`retrieval-silent.json` is FS006 then FS007, never FS008, never hallucination. `retrieval-conflict.json` is FS008 on `refunds`. `retrieval-conflict-silent.json` (different texts, no shared field) stays empty. `retrieval-then-fail.json` stays FS003.
+
+### Phase 6 (done)
+
+```text
+python -m pytest
+python -m failstep compare examples/traces/retry-loop.json examples/traces/success.json
+```
+
+Retry vs success is gone FS004, counted duration/steps/tokens. Identical files exit 0. Leftover is never called even if `FAILSTEP_LLM_URL` is set. Missing duration is omitted, not zero. Garbage still exits 2.
+
+### Phase 7 (done)
+
+```text
+python -m pytest
+python -m failstep fix examples/traces/retry-loop.json
+```
+
+The patch is the FS004 recommendation. Success is `patch none`, exit 0. The trace file is not rewritten. Leftover is never called. Garbage exits 2.
+
+### Phase 8 (done)
+
+```text
+python -m pytest
+python -m ruff check .
+python -m build
+```
+
+GitHub Actions: pytest + ruff on 3.11, 3.12, 3.13. Windows + Ubuntu. Wheel and sdist build on Ubuntu. Publish is a separate workflow on GitHub Release, not a default path.
 
 ## Commands we always run before a push
 
@@ -170,7 +216,7 @@ python -m pytest
 
 Same with `uv run` if that is how you installed.
 
-No coverage theater. We do not chase 100%. We chase: parser, five detectors, three report formats, four exit codes.
+No coverage theater. We do not chase 100%. We chase: parser, eight detectors, leftover LLM, compare diffs, fix patches, three report formats, four exit codes.
 
 ## What a detector PR must include
 

@@ -86,37 +86,77 @@ python -m failstep diagnose examples/traces/retry-loop.json
 
 Without `FAILSTEP_LLM_URL`, leftover dump stays silent. Retry dump stays FS004.
 
-Freeze. Do not start Phase 5 until someone says go.
+---
+
+## Phase 5 — RAG detectors (done)
+
+Empty retrieval (FS006), duplicate chunks (FS007), conflicting sources (FS008). Only when `type=retrieval` steps exist. Duplicate identity is `id` / `doc_id` / `chunk_id`, else `source`+`text`. Conflicts fire only on a shared scalar field (not free-text). Different texts from different sources stay silent.
+
+Gate (green, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m failstep diagnose tests/traces/retrieval-silent.json
+python -m failstep diagnose tests/traces/retrieval-conflict.json
+python -m failstep diagnose tests/traces/retrieval-then-fail.json
+```
+
+Empty+duplicate dump → FS006 root, FS007 secondary, no FS008. Structured `refunds` true/false → FS008. Tool failure after a healthy retrieval stays FS003.
 
 ---
 
-## Phase 5 — RAG detectors
-
-Empty retrieval, duplicate chunks, conflicting sources. Only when retrieval steps exist. Same golden + honesty rules.
-
----
-
-## Phase 6 — Compare
+## Phase 6 — Compare (done)
 
 `failstep compare old.json new.json`
 
-Counted diffs only. JSON + terminal goldens.
+Counted diffs only: finding ids gone/added/same, root-cause ids, and run fields that exist on both sides. Leftover is never called. Missing duration is not invented.
+
+Gate (green, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m failstep compare examples/traces/retry-loop.json examples/traces/success.json
+python -m failstep compare examples/traces/success.json examples/traces/success.json
+```
+
+Retry vs success → exit 1, gone FS004, status failed → success, steps 8 → 4. Identical success files → exit 0.
 
 ---
 
-## Phase 7 — Fix suggestions
+## Phase 7 — Fix suggestions (done)
 
-`failstep fix trace.json` prints a suggested patch to stdout. Same voice as the recommendation line. Does not write the user's source.
+`failstep fix TRACE` prints the recommendation as a patch. Same voice as diagnose. Does not write the user's source. Leftover is never called.
+
+Gate (green, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m failstep fix examples/traces/retry-loop.json
+python -m failstep fix examples/traces/success.json
+```
+
+Retry dump → exit 1, patch FS004, cap retries. Success dump → exit 0, patch none. Trace file bytes stay unchanged.
 
 ---
 
-## Phase 8 — Release
+## Phase 8 — Release (done)
 
 GitHub Actions: pytest + ruff, Python 3.11/3.12/3.13, Ubuntu + Windows.
 
-PyPI, CONTRIBUTING, issue templates, changelog, 20s terminal recording, LinkedIn.
+PyPI packaging (`python -m build`), CONTRIBUTING, issue templates, changelog. Publish runs on a GitHub Release only after a `pypi` environment and trusted publisher exist.
 
-Not before Phase 2 goldens are boring.
+Gate (green locally, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m build
+```
+
+V1 freeze. There is no Phase 9 in this file.
 
 ---
 

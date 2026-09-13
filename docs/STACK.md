@@ -29,7 +29,7 @@ Also: `python -m failstep diagnose trace.json` for people whose PATH did not get
 | Tests | **pytest** | Detectors live or die on fixtures. |
 | Lint | **Ruff** | One tool. Not flake8+black+isort. |
 | License | **MIT** | Companies can use it. |
-| CI (Phase 8) | **GitHub Actions** | Free for public OSS. pytest + ruff. |
+| CI | **GitHub Actions** | pytest + ruff on 3.11–3.13, Ubuntu + Windows. |
 
 V1 runtime deps: **typer, rich, pydantic**. Stop.
 
@@ -53,7 +53,7 @@ Best stack is the one a LangGraph author can clone and patch before lunch.
 
 3.11 gives us `tomllib` and the typing we need. We do not need 3.12.
 
-Test in CI later on 3.11, 3.12, 3.13. Never require 3.13.
+CI runs 3.11, 3.12, 3.13. Never require 3.13.
 
 ## Will this block us later?
 
@@ -104,8 +104,10 @@ No Docker. No cloud account.
 - Zero config file for V1
 - One positional path
 - Flags: `--format`, `--fail-on`, `--no-llm`, `--no-redact`
+- `compare` takes two paths. No leftover. Counted diffs only.
+- `fix` prints a patch. No leftover. Does not write files.
 - Garbage input: exit 2, point at `docs/TRACE_FORMAT.md`
-- ASCII-safe terminal (this machine is Windows)
+- ASCII-safe terminal (Windows included)
 - JSON field names frozen by tests
 
 If a developer needs a tutorial after `failstep --help`, we failed.

@@ -16,9 +16,12 @@ trace.json / trace.jsonl / otel.json
     normalize        Run + Step (Pydantic)
         |
         v
-    detectors        FS001-FS005, evidence only
+    detectors        FS001-FS008, evidence only
         |
         +-- findings --> report (one root cause + secondary)
+        |
+        +-- compare      two reports, counted diffs only
+        +-- fix          print the recommendation; never writes files
         |
         +-- no error finding
                  |
@@ -31,7 +34,7 @@ trace.json / trace.jsonl / otel.json
 
 ## Layout
 
-Phase 4 (shipped). `adapters.py` maps OpenAI, LangChain, and exported OTEL GenAI JSON. `redact.py` strips secrets. `llm.py` posts a summary only when `FAILSTEP_LLM_URL` is set and no error finding exists.
+Phase 8 (shipped). CI, sdist/wheel, changelog, contributing, issue templates.
 
 ```text
 src/failstep/
@@ -45,6 +48,7 @@ src/failstep/
     normalize.py
     evidence.py
     diagnose.py
+    compare.py
     report.py
     redact.py
     llm.py
@@ -55,12 +59,16 @@ src/failstep/
         tool_error.py
         retry.py
         timeout.py
+        retrieval.py
 
 tests/
 examples/traces/
 docs/
+.github/
 pyproject.toml
 README.md
+CONTRIBUTING.md
+CHANGELOG.md
 LICENSE
 ```
 
@@ -88,6 +96,9 @@ Nested OTEL spans flatten to ordered steps. Optional `parent_id` in metadata.
 3. FS003 ToolFailure
 4. FS004 RetryLoop
 5. FS005 Timeout
+6. FS006 EmptyRetrieval
+7. FS007 DuplicateChunks
+8. FS008 ConflictingSources
 
 Root cause = highest severity (`error` then `warning`), then this order, then first step index.
 

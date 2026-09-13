@@ -1,0 +1,9 @@
+failstep 0.1.0
+file         examples/traces/success.json
+run          checkout-agent
+
+patch
+  none
+
+also
+  none

@@ -54,11 +54,19 @@ Detectors first. LLM leftover is Phase 4, shipped, opt-in via `FAILSTEP_LLM_URL`
 
 ## V1 commands
 
-`inspect`, `diagnose`, `version`.
+`inspect`, `diagnose`, `compare`, `fix`, `version`.
+
+`compare` diagnoses both files with leftover off, then counts finding-id diffs and run field diffs (`status`, `steps`, `duration_ms`, `tokens_in`, `tokens_out`). Missing numbers stay missing. Exit 1 if anything changed, 0 if identical, 2 on garbage.
+
+`fix` prints the recommendation as a patch. It does not write the user's source. Leftover is never called. Exit 1 when a patch exists, 0 when none, 2 on garbage.
 
 ## V1 detectors
 
-FS001 malformed, FS002 schema, FS003 tool failure, FS004 retry, FS005 timeout.
+FS001 malformed, FS002 schema, FS003 tool failure, FS004 retry, FS005 timeout, FS006 empty retrieval, FS007 duplicate chunks, FS008 conflicting sources.
+
+FS006: retrieval step with zero documents or `hits: 0`. Tool searches are not retrieval.
+FS007: warning. Same chunk id, or same source+text, twice in one step.
+FS008: two documents in one step disagree on a shared scalar field. Free-text is not a conflict.
 
 FS005: step `>= 15000ms` error, run `>= 30000ms` error, one step `>= 80%` of run and `>= 5000ms` warning.
 
@@ -84,7 +92,7 @@ JSON field names are a contract (`schema_version: 1`).
 Pytest from Phase 1. Golden traces + frozen reports. Exit codes 0/1/2/3 asserted.
 A finding's evidence must appear in the fixture file. Spec: `TESTING.md`.
 
-CI (Actions, 3.11-3.13, Windows+Ubuntu) is Phase 8. Until then, run pytest on this Windows box before every push.
+CI (Actions, 3.11-3.13, Windows+Ubuntu) is Phase 8, shipped. pytest + ruff on every pull request.
 
 ## Remote
 
@@ -92,4 +100,4 @@ https://github.com/AbdelazizBs/failstep.git
 
 ## Next
 
-Phase 4 is done. Leftover LLM is opt-in. Freeze. Phase 5 is RAG detectors, not started.
+Phase 8 is done. CI, changelog, contributing, issue templates. V1 freeze.

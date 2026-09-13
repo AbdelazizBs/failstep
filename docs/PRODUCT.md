@@ -104,17 +104,19 @@ JSON field names are a contract. Tests freeze them. A silent "healthy" on garbag
 | "Fake metrics." | No confidence field on the Finding model. |
 | "Windows mojibake." | ASCII-safe terminal. No required emoji. |
 | "Secrets leaked to GPT." | Default path never leaves the machine. LLM path redacts first. |
-| "Empty project." | Golden traces + detector tests before any social post. |
+| "Empty project." | Golden traces + detector tests ship with the CLI. |
 
 ## V1 commands
 
 ```text
 failstep inspect TRACE
 failstep diagnose TRACE [--format terminal|json|markdown] [--no-llm] [--no-redact] [--fail-on error|warning]
+failstep compare OLD NEW [--format terminal|json|markdown]
+failstep fix TRACE [--format terminal|json|markdown]
 failstep version
 ```
 
-Not in V1: `explain`, `compare`, `fix`, `serve`, `init`, capture SDK.
+Not in V1: `explain`, `serve`, `init`, capture SDK.
 
 ## V1 detectors
 
@@ -125,9 +127,12 @@ Not in V1: `explain`, `compare`, `fix`, `serve`, `init`, capture SDK.
 | FS003 | ToolFailure | exception, HTTP 4xx/5xx, empty error payload |
 | FS004 | RetryLoop | same tool + same args, 3+ times, no meaningful change |
 | FS005 | Timeout | step/run over threshold, or one step dominates duration |
+| FS006 | EmptyRetrieval | retrieval step returned zero documents |
+| FS007 | DuplicateChunks | same chunk id or source+text twice in one retrieval step |
+| FS008 | ConflictingSources | two documents in one step disagree on a shared scalar field |
 | FS000 | leftover | opt-in only: no error finding, `FAILSTEP_LLM_URL` set, warning |
 
-Root cause = first `error` in that ID order, else first `warning`. FS000 cannot replace FS001–FS005.
+Root cause = first `error` in that ID order, else first `warning`. FS000 cannot replace FS001–FS008.
 
 ## Success
 
@@ -140,4 +145,4 @@ failstep diagnose examples/traces/retry-loop.json
 
 sees the retry, the step indexes, the repeated arguments, and "stop retrying identical calls".
 
-If that is not true, we do not launch on LinkedIn.
+If that is not true, V1 is not ready.

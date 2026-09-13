@@ -1,0 +1,19 @@
+failstep 0.1.0
+old          examples/traces/retry-loop.json
+new          examples/traces/success.json
+
+root cause
+  old  FS004  retry loop
+  new  none
+
+findings
+  gone   FS004
+  added  none
+  same   none
+
+run
+  status       failed -> success
+  steps        8 -> 4  (-4)
+  duration ms  14820 -> 2100  (-12720)
+  tokens in    4200 -> 800  (-3400)
+  tokens out   800 -> 120  (-680)

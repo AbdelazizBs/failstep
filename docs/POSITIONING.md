@@ -94,19 +94,3 @@ Name is dead. Instrumentation SDK and MCP health scanner. Unrelated. Do not figh
 > agent-debug asks a model. failstep reads the file.
 >
 > agentlint watches Claude Code. failstep watches the trace you already exported.
-
-## LinkedIn / social (after Phase 2, not before)
-
-Show a terminal. Not a manifesto.
-
-```text
-failstep diagnose retry-loop.json
-
-Root cause  FS004 retry loop  (steps 3-5, search_docs)
-Evidence    same arguments three times, no new output
-Fix         cap identical tool retries at 1
-```
-
-Caption: local, no API key, MIT.
-
-Do not say we invented agent diagnosis. Say we made the useful 60 seconds.

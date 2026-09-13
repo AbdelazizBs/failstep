@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "tool": "failstep",
+  "tool_version": "0.1.0",
+  "old": {
+    "file": "examples/traces/retry-loop.json",
+    "run": {
+      "id": "checkout-agent",
+      "status": "failed",
+      "duration_ms": 14820,
+      "step_count": 8,
+      "tokens_in": 4200,
+      "tokens_out": 800
+    },
+    "root_cause": "FS004",
+    "findings": [
+      "FS004"
+    ]
+  },
+  "new": {
+    "file": "examples/traces/success.json",
+    "run": {
+      "id": "checkout-agent",
+      "status": "success",
+      "duration_ms": 2100,
+      "step_count": 4,
+      "tokens_in": 800,
+      "tokens_out": 120
+    },
+    "root_cause": null,
+    "findings": []
+  },
+  "diff": {
+    "findings": {
+      "gone": [
+        "FS004"
+      ],
+      "added": [],
+      "same": []
+    },
+    "root_cause": {
+      "old": "FS004",
+      "new": null
+    },
+    "run": [
+      {
+        "key": "status",
+        "old": "failed",
+        "new": "success"
+      },
+      {
+        "key": "steps",
+        "old": 8,
+        "new": 4,
+        "delta": -4
+      },
+      {
+        "key": "duration_ms",
+        "old": 14820,
+        "new": 2100,
+        "delta": -12720
+      },
+      {
+        "key": "tokens_in",
+        "old": 4200,
+        "new": 800,
+        "delta": -3400
+      },
+      {
+        "key": "tokens_out",
+        "old": 800,
+        "new": 120,
+        "delta": -680
+      }
+    ]
+  }
+}

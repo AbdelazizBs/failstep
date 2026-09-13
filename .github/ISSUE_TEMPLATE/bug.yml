@@ -1,0 +1,48 @@
+name: Bug
+description: A command printed the wrong finding, crashed, or accepted garbage.
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: failstep version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: Exact command, including flags.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+      description: Paste stdout. Redact secrets.
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Trace
+      description: Minimal JSON, or a path under examples/traces or tests/traces. Redact secrets. Do not paste API keys.
+      render: json
+  - type: input
+    id: python
+    attributes:
+      label: Python
+      placeholder: "3.12.0"
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: Windows 11 / Ubuntu 24.04

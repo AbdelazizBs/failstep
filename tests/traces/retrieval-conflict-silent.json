@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "run_id": "retrieval-conflict-silent",
+  "status": "success",
+  "duration_ms": 300,
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "retrieval",
+      "name": "search_docs",
+      "input": {
+        "query": "policy windows"
+      },
+      "output": {
+        "hits": 2,
+        "chunks": [
+          {
+            "source": "help://refund",
+            "text": "30 days"
+          },
+          {
+            "source": "help://shipping",
+            "text": "5 days"
+          }
+        ]
+      },
+      "error": null,
+      "latency_ms": 40
+    }
+  ]
+}

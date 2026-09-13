@@ -13,7 +13,9 @@ No API key. No network. A root cause, quoted evidence, and what to change.
 
 Repo: [github.com/AbdelazizBs/failstep](https://github.com/AbdelazizBs/failstep)
 
-**Phase 2 is in this repo:** `inspect` prints the run. `diagnose` names the failed step.
+[![CI](https://github.com/AbdelazizBs/failstep/actions/workflows/ci.yml/badge.svg)](https://github.com/AbdelazizBs/failstep/actions/workflows/ci.yml)
+
+`inspect` prints the run. `diagnose` names the failed step. `compare` counts diffs. `fix` prints the recommendation.
 
 ## 60 seconds
 
@@ -62,13 +64,15 @@ python -m failstep version
 ```text
 failstep inspect TRACE [--format terminal|json|markdown]
 failstep diagnose TRACE [--format terminal|json|markdown] [--fail-on error|warning] [--no-llm] [--no-redact]
+failstep compare OLD NEW [--format terminal|json|markdown]
+failstep fix TRACE [--format terminal|json|markdown]
 failstep version
 ```
 
 Native JSON and JSONL. Also OpenAI `messages` + `tool_calls`, LangChain `intermediate_steps`, and exported OpenTelemetry GenAI JSON (`resourceSpans` or `{spans: [...]}`). Contract: [docs/TRACE_FORMAT.md](docs/TRACE_FORMAT.md).
 How the report must look: [docs/OUTPUT.md](docs/OUTPUT.md).
 
-Detectors: FS001 malformed output, FS002 tool schema, FS003 tool failure, FS004 retry loop, FS005 timeout. Optional leftover (`FS000`) only if `FAILSTEP_LLM_URL` is set, httpx is installed (`pip install failstep[llm]`), and no error finding exists. `--no-llm` skips it. Secrets are redacted before the request.
+Detectors: FS001 malformed output, FS002 tool schema, FS003 tool failure, FS004 retry loop, FS005 timeout, FS006 empty retrieval, FS007 duplicate chunks, FS008 conflicting sources. Optional leftover (`FS000`) only if `FAILSTEP_LLM_URL` is set, httpx is installed (`pip install failstep[llm]`), and no error finding exists. `--no-llm` skips it. Secrets are redacted before the request.
 
 ## Tests
 
@@ -93,6 +97,8 @@ If you use uv: `uv sync --extra dev` then `uv run pytest` / `uv run ruff check .
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Modules and pipeline |
 | [docs/COMPETITORS.md](docs/COMPETITORS.md) | Market scan |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Locked decisions |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, tests, pull requests |
+| [CHANGELOG.md](CHANGELOG.md) | Shipped versions |
 
 ## License
 

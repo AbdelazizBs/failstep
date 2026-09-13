@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from failstep.detectors.malformed import detect as detect_malformed
+from failstep.detectors.retrieval import detect as detect_retrieval
 from failstep.detectors.retry import detect as detect_retry
 from failstep.detectors.schema import detect as detect_schema
 from failstep.detectors.timeout import detect as detect_timeout
@@ -17,6 +18,7 @@ DETECTORS: list[Detector] = [
     detect_tool_error,
     detect_retry,
     detect_timeout,
+    detect_retrieval,
 ]
 
 

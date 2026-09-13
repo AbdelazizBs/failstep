@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "tool": "failstep",
+  "tool_version": "0.1.0",
+  "file": "tests/traces/retrieval-silent.json",
+  "run": {
+    "id": "retrieval-silent",
+    "status": "success",
+    "duration_ms": 400,
+    "step_count": 3,
+    "tokens_in": 60,
+    "tokens_out": 20
+  },
+  "root_cause": {
+    "id": "FS006",
+    "detector": "empty_retrieval",
+    "title": "empty retrieval",
+    "severity": "error",
+    "step_ids": [
+      "step_1"
+    ],
+    "step_indexes": [
+      1
+    ],
+    "evidence": [
+      {
+        "key": "tool",
+        "value": "search_docs"
+      },
+      {
+        "key": "steps",
+        "value": 1
+      },
+      {
+        "key": "hits",
+        "value": 0
+      },
+      {
+        "key": "chunks",
+        "value": 0
+      },
+      {
+        "key": "query",
+        "value": "refund policy"
+      }
+    ],
+    "recommendation": "Do not answer from an empty retrieval. Retry the query or tell the user nothing was found.",
+    "source": "deterministic"
+  },
+  "secondary": [
+    {
+      "id": "FS007",
+      "detector": "duplicate_chunks",
+      "title": "duplicate chunks",
+      "severity": "warning",
+      "step_ids": [
+        "step_2"
+      ],
+      "step_indexes": [
+        2
+      ],
+      "evidence": [
+        {
+          "key": "tool",
+          "value": "search_docs"
+        },
+        {
+          "key": "copies",
+          "value": 2
+        },
+        {
+          "key": "chunks",
+          "value": 3
+        },
+        {
+          "key": "source",
+          "value": "help://refund"
+        },
+        {
+          "key": "text",
+          "value": "30 days"
+        }
+      ],
+      "recommendation": "Deduplicate retrieval chunks by id before sending them to the model.",
+      "source": "deterministic"
+    }
+  ],
+  "findings": [
+    {
+      "id": "FS006",
+      "detector": "empty_retrieval",
+      "title": "empty retrieval",
+      "severity": "error",
+      "step_ids": [
+        "step_1"
+      ],
+      "step_indexes": [
+        1
+      ],
+      "evidence": [
+        {
+          "key": "tool",
+          "value": "search_docs"
+        },
+        {
+          "key": "steps",
+          "value": 1
+        },
+        {
+          "key": "hits",
+          "value": 0
+        },
+        {
+          "key": "chunks",
+          "value": 0
+        },
+        {
+          "key": "query",
+          "value": "refund policy"
+        }
+      ],
+      "recommendation": "Do not answer from an empty retrieval. Retry the query or tell the user nothing was found.",
+      "source": "deterministic"
+    },
+    {
+      "id": "FS007",
+      "detector": "duplicate_chunks",
+      "title": "duplicate chunks",
+      "severity": "warning",
+      "step_ids": [
+        "step_2"
+      ],
+      "step_indexes": [
+        2
+      ],
+      "evidence": [
+        {
+          "key": "tool",
+          "value": "search_docs"
+        },
+        {
+          "key": "copies",
+          "value": 2
+        },
+        {
+          "key": "chunks",
+          "value": 3
+        },
+        {
+          "key": "source",
+          "value": "help://refund"
+        },
+        {
+          "key": "text",
+          "value": "30 days"
+        }
+      ],
+      "recommendation": "Deduplicate retrieval chunks by id before sending them to the model.",
+      "source": "deterministic"
+    }
+  ]
+}

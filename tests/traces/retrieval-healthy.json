@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "run_id": "retrieval-healthy",
+  "status": "success",
+  "duration_ms": 250,
+  "error": null,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "retrieval",
+      "name": "search_docs",
+      "input": {
+        "query": "refund policy"
+      },
+      "output": {
+        "hits": 1,
+        "chunks": [
+          {
+            "id": "help://refund",
+            "score": 0.9,
+            "text": "30 days"
+          }
+        ]
+      },
+      "error": null,
+      "latency_ms": 40
+    },
+    {
+      "id": "step_2",
+      "type": "llm",
+      "name": "answer",
+      "input": null,
+      "output": "Refunds are allowed within 30 days.",
+      "error": null,
+      "latency_ms": 90
+    }
+  ]
+}

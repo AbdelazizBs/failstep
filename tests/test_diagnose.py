@@ -118,6 +118,7 @@ def test_diagnose_multi_failure_goldens(runner: CliRunner, monkeypatch) -> None:
         "FS003",
         "FS004",
         "FS005",
+        "FS007",
     ]
 
     md = runner.invoke(
@@ -196,3 +197,54 @@ def test_timeout_missing_duration_golden(runner: CliRunner, monkeypatch) -> None
     assert evidence["latency_ms"] is None
     assert "run_duration_ms" not in evidence
     assert payload["run"]["duration_ms"] is None
+
+
+def test_diagnose_retrieval_silent_goldens(runner: CliRunner, monkeypatch) -> None:
+    monkeypatch.chdir(ROOT)
+    term = runner.invoke(app, ["diagnose", "tests/traces/retrieval-silent.json"])
+    assert term.exit_code == 1
+    expected_term = (GOLDENS / "retrieval-silent.terminal.txt").read_text(
+        encoding="utf-8"
+    )
+    assert _strip_eol(term.stdout) == _strip_eol(expected_term)
+    assert "FS006" in term.stdout
+    assert "FS007" in term.stdout
+    assert "FS008" not in term.stdout
+    assert "hallucin" not in term.stdout.lower()
+    assert "confidence" not in term.stdout
+
+    js = runner.invoke(
+        app,
+        ["diagnose", "tests/traces/retrieval-silent.json", "--format", "json"],
+    )
+    assert js.exit_code == 1
+    payload = json.loads(js.stdout)
+    expected = json.loads(
+        (GOLDENS / "retrieval-silent.json").read_text(encoding="utf-8")
+    )
+    assert payload == expected
+    assert payload["root_cause"]["id"] == "FS006"
+    assert [item["id"] for item in payload["findings"]] == ["FS006", "FS007"]
+
+    md = runner.invoke(
+        app,
+        [
+            "diagnose",
+            "tests/traces/retrieval-silent.json",
+            "--format",
+            "markdown",
+        ],
+    )
+    assert md.exit_code == 1
+    expected_md = (GOLDENS / "retrieval-silent.md").read_text(encoding="utf-8")
+    assert _strip_eol(md.stdout) == _strip_eol(expected_md)
+
+
+def test_diagnose_empty_retrieval_example(runner: CliRunner, monkeypatch) -> None:
+    monkeypatch.chdir(ROOT)
+    result = runner.invoke(app, ["diagnose", "examples/traces/empty-retrieval.json"])
+    assert result.exit_code == 1
+    expected = (GOLDENS / "empty-retrieval.terminal.txt").read_text(encoding="utf-8")
+    assert _strip_eol(result.stdout) == _strip_eol(expected)
+    assert "FS006" in result.stdout
+    assert "FS007" not in result.stdout

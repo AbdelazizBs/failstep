@@ -164,8 +164,14 @@ def test_timeout_dominate_is_warning() -> None:
 def test_retrieval_empty_and_duplicates_are_not_hallucinations() -> None:
     run = _run("retrieval-silent.json")
     report = diagnose(run, "tests/traces/retrieval-silent.json")
-    assert report.findings == []
-    assert "hallucin" not in report.model_dump_json().lower()
+    assert report.root_cause is not None
+    assert report.root_cause.id == "FS006"
+    assert _ids(report.findings) == ["FS006", "FS007"]
+    assert report.findings[0].step_ids == ["step_1"]
+    assert report.findings[1].step_ids == ["step_2"]
+    dumped = report.model_dump_json()
+    assert "hallucin" not in dumped.lower()
+    assert "confidence" not in dumped
 
 
 def test_retrieval_then_diagnosable_tool_failure() -> None:
@@ -196,13 +202,24 @@ def test_multi_failure_keeps_evidence_apart() -> None:
     report = diagnose(run, "tests/traces/multi-failure.json")
     assert report.root_cause is not None
     assert report.root_cause.id == "FS001"
-    assert _ids(report.findings) == ["FS001", "FS002", "FS003", "FS004", "FS005"]
+    assert _ids(report.findings) == [
+        "FS001",
+        "FS002",
+        "FS003",
+        "FS004",
+        "FS005",
+        "FS007",
+    ]
     by_id = {item.id: item for item in report.findings}
     assert by_id["FS001"].step_ids == ["step_16"]
     assert by_id["FS002"].step_ids == ["step_3", "step_4", "step_6"]
     assert by_id["FS003"].step_ids == ["step_18"]
     assert by_id["FS004"].step_ids == ["step_13", "step_14", "step_15"]
     assert by_id["FS005"].step_ids == ["step_8"]
+    assert by_id["FS007"].step_ids == ["step_10"]
+    duplicate = {item.key: item.value for item in by_id["FS007"].evidence}
+    assert duplicate["copies"] == 2
+    assert duplicate["source"] == "help://refund"
     retry = {item.key: item.value for item in by_id["FS004"].evidence}
     assert retry["identical calls"] == 3
     assert retry["args"] == {"query": "refund policy"}
