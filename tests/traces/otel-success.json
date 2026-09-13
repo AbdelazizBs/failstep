@@ -1,0 +1,148 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "checkout-agent"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "gen_ai"
+          },
+          "spans": [
+            {
+              "traceId": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "spanId": "1414141414141414",
+              "name": "invoke_agent checkout-agent",
+              "startTimeUnixNano": "5000000000000",
+              "endTimeUnixNano": "5002100000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "checkout-agent"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "spanId": "1515151515151515",
+              "name": "chat",
+              "startTimeUnixNano": "5000200000000",
+              "endTimeUnixNano": "5000400000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "plan"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "parentSpanId": "1414141414141414"
+            },
+            {
+              "traceId": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "spanId": "1616161616161616",
+              "name": "execute_tool get_order",
+              "startTimeUnixNano": "5000500000000",
+              "endTimeUnixNano": "5000540000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.name",
+                  "value": {
+                    "stringValue": "get_order"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.arguments",
+                  "value": {
+                    "stringValue": "{\"order_id\": \"ord_9\"}"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.result",
+                  "value": {
+                    "stringValue": "{\"status\": \"paid\"}"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "parentSpanId": "1414141414141414"
+            },
+            {
+              "traceId": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "spanId": "1717171717171717",
+              "name": "retrieval search_docs",
+              "startTimeUnixNano": "5000600000000",
+              "endTimeUnixNano": "5000640000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "retrieval"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.name",
+                  "value": {
+                    "stringValue": "search_docs"
+                  }
+                },
+                {
+                  "key": "gen_ai.retrieval.query.text",
+                  "value": {
+                    "stringValue": "refund policy"
+                  }
+                },
+                {
+                  "key": "gen_ai.retrieval.documents",
+                  "value": {
+                    "stringValue": "[{\"id\": \"help://refund\", \"score\": 0.9, \"text\": \"30 days\"}]"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "parentSpanId": "1414141414141414"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

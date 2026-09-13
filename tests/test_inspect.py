@@ -40,6 +40,21 @@ def test_inspect_shows_run_and_steps(runner: CliRunner, monkeypatch) -> None:
     assert "tool" in out
 
 
+def test_inspect_otel_retry_loop_matches_golden(
+    runner: CliRunner, monkeypatch
+) -> None:
+    monkeypatch.chdir(ROOT)
+    result = runner.invoke(app, ["inspect", "examples/traces/otel-retry-loop.json"])
+    assert result.exit_code == 0
+    expected = (
+        ROOT / "tests" / "goldens" / "inspect-otel-retry-loop.terminal.txt"
+    ).read_text(encoding="utf-8")
+    assert _strip_eol(result.stdout) == _strip_eol(expected)
+    assert "checkout-agent" in result.stdout
+    assert "14820 ms" in result.stdout
+    assert "FS005" not in result.stdout
+
+
 def test_inspect_json_matches_golden(runner: CliRunner, monkeypatch) -> None:
     monkeypatch.chdir(ROOT)
     result = runner.invoke(

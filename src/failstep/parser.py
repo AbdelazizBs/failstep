@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from failstep.adapters import adapt
+from failstep.adapters import adapt, is_otel_payload
 from failstep.errors import ParseError
 from failstep.models import Run
 from failstep.normalize import normalize
@@ -120,6 +120,8 @@ def _as_native(data: Any) -> dict[str, Any] | None:
     if isinstance(data, list):
         if not data or not all(isinstance(item, dict) for item in data):
             return None
+        if is_otel_payload(data):
+            return None
         return {"steps": data}
 
     if not isinstance(data, dict):
@@ -129,5 +131,7 @@ def _as_native(data: Any) -> dict[str, Any] | None:
     if not isinstance(steps, list):
         return None
     if not all(isinstance(item, dict) for item in steps):
+        return None
+    if steps and is_otel_payload({"steps": steps}) and "resourceSpans" not in data:
         return None
     return data

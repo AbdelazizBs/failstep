@@ -31,7 +31,7 @@ trace.json / trace.jsonl / otel.json
 
 ## Layout
 
-Phase 2 (shipped):
+Phase 3 (shipped). `adapters.py` maps OpenAI, LangChain, and exported OTEL GenAI JSON into native steps.
 
 ```text
 src/failstep/

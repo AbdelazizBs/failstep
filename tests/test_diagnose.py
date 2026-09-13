@@ -139,6 +139,45 @@ def test_fail_on_warning_dominate(runner: CliRunner, monkeypatch) -> None:
     assert warn.exit_code == 1
 
 
+def test_diagnose_otel_retry_loop_goldens(runner: CliRunner, monkeypatch) -> None:
+    monkeypatch.chdir(ROOT)
+    term = runner.invoke(app, ["diagnose", "examples/traces/otel-retry-loop.json"])
+    assert term.exit_code == 1
+    expected_term = (GOLDENS / "otel-retry-loop.terminal.txt").read_text(
+        encoding="utf-8"
+    )
+    assert _strip_eol(term.stdout) == _strip_eol(expected_term)
+    assert "FS004" in term.stdout
+    assert "FS005" not in term.stdout
+    assert "confidence" not in term.stdout
+
+    js = runner.invoke(
+        app,
+        ["diagnose", "examples/traces/otel-retry-loop.json", "--format", "json"],
+    )
+    assert js.exit_code == 1
+    payload = json.loads(js.stdout)
+    expected = json.loads(
+        (GOLDENS / "otel-retry-loop.json").read_text(encoding="utf-8")
+    )
+    assert payload == expected
+    assert payload["root_cause"]["id"] == "FS004"
+    assert payload["secondary"] == []
+
+    md = runner.invoke(
+        app,
+        [
+            "diagnose",
+            "examples/traces/otel-retry-loop.json",
+            "--format",
+            "markdown",
+        ],
+    )
+    assert md.exit_code == 1
+    expected_md = (GOLDENS / "otel-retry-loop.md").read_text(encoding="utf-8")
+    assert _strip_eol(md.stdout) == _strip_eol(expected_md)
+
+
 def test_timeout_missing_duration_golden(runner: CliRunner, monkeypatch) -> None:
     monkeypatch.chdir(ROOT)
     result = runner.invoke(

@@ -1,0 +1,14 @@
+failstep 0.1.0
+file         examples/traces/otel-retry-loop.json
+run          checkout-agent
+status       failed
+duration     14820 ms
+steps        5
+tokens       4200 in / 800 out
+
+step  type       name              latency  error
+   1  other      checkout-agent          -  failed
+   2  llm        plan                210ms
+   3  tool       search_docs          80ms
+   4  tool       search_docs          80ms
+   5  tool       search_docs          80ms

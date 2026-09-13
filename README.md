@@ -65,7 +65,7 @@ failstep diagnose TRACE [--format terminal|json|markdown] [--fail-on error|warni
 failstep version
 ```
 
-Native JSON and JSONL. Also OpenAI `messages` + `tool_calls`, and LangChain `intermediate_steps`. Contract: [docs/TRACE_FORMAT.md](docs/TRACE_FORMAT.md).
+Native JSON and JSONL. Also OpenAI `messages` + `tool_calls`, LangChain `intermediate_steps`, and exported OpenTelemetry GenAI JSON (`resourceSpans` or `{spans: [...]}`). Contract: [docs/TRACE_FORMAT.md](docs/TRACE_FORMAT.md).
 How the report must look: [docs/OUTPUT.md](docs/OUTPUT.md).
 
 Detectors: FS001 malformed output, FS002 tool schema, FS003 tool failure, FS004 retry loop, FS005 timeout.

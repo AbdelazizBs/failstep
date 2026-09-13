@@ -1,0 +1,62 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "support-agent"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "gen_ai"
+          },
+          "spans": [
+            {
+              "traceId": "cccccccccccccccccccccccccccccccc",
+              "spanId": "dddddddddddddddd",
+              "name": "execute_tool get_customer",
+              "startTimeUnixNano": "3000000000000",
+              "endTimeUnixNano": "3000120000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.name",
+                  "value": {
+                    "stringValue": "get_customer"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.call.arguments",
+                  "value": {
+                    "stringValue": "{\"email\": \"user@example.test\"}"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.definitions",
+                  "value": {
+                    "stringValue": "[{\"name\": \"get_customer\", \"parameters\": {\"required\": [\"customer_id\"], \"properties\": {\"customer_id\": {\"type\": \"string\"}}}}]"
+                  }
+                }
+              ],
+              "status": {
+                "code": 2,
+                "message": "customer_id is required"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

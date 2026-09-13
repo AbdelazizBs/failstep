@@ -46,13 +46,25 @@ python -m failstep diagnose tests/traces/multi-failure.json
 
 ---
 
-## Phase 3 — OpenTelemetry ingest
+## Phase 3 — OpenTelemetry ingest (done)
 
-One adapter. Exported JSON spans. Map `invoke_agent` / `chat` / `execute_tool` / `retrieval`.
+One adapter. Exported JSON spans. Map `invoke_agent` / `chat` / `execute_tool` / `retrieval`. Wrapper spans stay in `inspect` and do not set `latency_ms`, so they cannot steal FS005.
 
-Gate: synthetic OTEL fixture → FS002 or FS004. New goldens. Mapping that drops a tool error fails the test.
+Not a live OTLP server. No `opentelemetry-sdk`.
 
-Not a live OTLP server.
+Gate (green, 2026-09-13):
+
+```text
+python -m pytest
+python -m ruff check .
+python -m failstep diagnose examples/traces/otel-retry-loop.json
+python -m failstep diagnose tests/traces/otel-tool-error.json
+python -m failstep diagnose tests/traces/otel-http-only.json
+```
+
+Retry dump → FS004, no FS005. Tool error dump → FS003. HTTP-only dump → exit 2.
+
+Freeze. Do not start Phase 4 until someone says go.
 
 ---
 

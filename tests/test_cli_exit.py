@@ -70,6 +70,14 @@ def test_diagnose_finding_exit_1(runner: CliRunner, monkeypatch) -> None:
     assert "Traceback" not in result.stdout
 
 
+def test_otel_http_only_exit_2(runner: CliRunner, monkeypatch) -> None:
+    monkeypatch.chdir(ROOT)
+    result = runner.invoke(app, ["diagnose", "tests/traces/otel-http-only.json"])
+    assert result.exit_code == 2
+    assert "Not a failstep trace" in result.stdout
+    assert "docs/TRACE_FORMAT.md" in result.stdout
+
+
 def test_diagnose_garbage_exit_2(runner: CliRunner, tmp_path: Path) -> None:
     path = tmp_path / "nope.json"
     path.write_text("[]", encoding="utf-8")

@@ -19,12 +19,13 @@ If a PR cannot name which of those it protects, it is not ready.
 ```text
 examples/traces/          product demos (README)
 tests/
-  traces/                 hard fixtures (openai, langchain, jsonl, traps)
+  traces/                 hard fixtures (openai, langchain, jsonl, traps, otel)
   test_parser.py
   test_inspect.py
   test_cli_exit.py
   test_diagnose.py
   test_sniff.py
+  test_otel.py
   test_honesty.py
   test_detectors/
   goldens/
@@ -38,6 +39,10 @@ tests/
     multi-failure.json
     multi-failure.md
     timeout-missing-duration.json
+    otel-retry-loop.terminal.txt
+    otel-retry-loop.json
+    otel-retry-loop.md
+    inspect-otel-retry-loop.terminal.txt
 ```
 
 `examples/traces/` is the product demo. `tests/traces/` can be ugly. Do not put secrets in either.
@@ -130,9 +135,14 @@ Every FS001-FS005 example fires the right id. `success.json` is empty findings, 
 
 Trap fixtures in `tests/traces/` (schema-traps, retry-silent, multi-failure, timeout-missing-duration, retrieval-silent) are green. Keep them green.
 
-### Phase 3
+### Phase 3 (done)
 
-OTEL JSON ingest. New fixture in `tests/traces/` plus a diagnose golden. If the mapping drops a tool error, that is a failed test, not a "known limit" in the README.
+```text
+python -m pytest
+python -m failstep diagnose examples/traces/otel-retry-loop.json
+```
+
+OTLP JSON (`resourceSpans`) and Python `{spans: [...]}` map into `Run`. `otel-retry-loop.json` is FS004, not FS005. `otel-tool-error.json` is FS003. HTTP-only dumps stay unknown shape (exit 2). If the mapping drops a tool error, that is a failed test, not a "known limit" in the README.
 
 ### Phase 4
 

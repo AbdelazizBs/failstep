@@ -1,0 +1,93 @@
+{
+  "spans": [
+    {
+      "name": "chat plan",
+      "context": {
+        "trace_id": "dddddddddddddddddddddddddddddddd",
+        "span_id": "eeeeeeeeeeeeeeee"
+      },
+      "parent_id": null,
+      "start_time": 4000000000000,
+      "end_time": 4000100000000,
+      "attributes": {
+        "gen_ai.operation.name": "chat",
+        "gen_ai.request.model": "plan"
+      },
+      "status": {
+        "status_code": "OK"
+      }
+    },
+    {
+      "name": "execute_tool search_docs",
+      "context": {
+        "trace_id": "dddddddddddddddddddddddddddddddd",
+        "span_id": "ffffffffffffffff"
+      },
+      "parent_id": "eeeeeeeeeeeeeeee",
+      "start_time": 4000200000000,
+      "end_time": 4000280000000,
+      "attributes": {
+        "gen_ai.operation.name": "execute_tool",
+        "gen_ai.tool.name": "search_docs",
+        "gen_ai.tool.call.arguments": {
+          "query": "refund policy"
+        },
+        "gen_ai.tool.call.result": {
+          "hits": 0,
+          "chunks": []
+        }
+      },
+      "status": {
+        "status_code": "UNSET"
+      }
+    },
+    {
+      "name": "execute_tool search_docs",
+      "context": {
+        "trace_id": "dddddddddddddddddddddddddddddddd",
+        "span_id": "1212121212121212"
+      },
+      "parent_id": "eeeeeeeeeeeeeeee",
+      "start_time": 4000300000000,
+      "end_time": 4000380000000,
+      "attributes": {
+        "gen_ai.operation.name": "execute_tool",
+        "gen_ai.tool.name": "search_docs",
+        "gen_ai.tool.call.arguments": {
+          "query": "refund policy"
+        },
+        "gen_ai.tool.call.result": {
+          "hits": 0,
+          "chunks": []
+        }
+      },
+      "status": {
+        "status_code": "UNSET"
+      }
+    },
+    {
+      "name": "execute_tool search_docs",
+      "context": {
+        "trace_id": "dddddddddddddddddddddddddddddddd",
+        "span_id": "1313131313131313"
+      },
+      "parent_id": "eeeeeeeeeeeeeeee",
+      "start_time": 4000400000000,
+      "end_time": 4000480000000,
+      "attributes": {
+        "gen_ai.operation.name": "execute_tool",
+        "gen_ai.tool.name": "search_docs",
+        "gen_ai.tool.call.arguments": {
+          "query": "refund policy"
+        },
+        "gen_ai.tool.call.result": {
+          "hits": 0,
+          "chunks": []
+        }
+      },
+      "status": {
+        "status_code": "UNSET"
+      }
+    }
+  ]
+}

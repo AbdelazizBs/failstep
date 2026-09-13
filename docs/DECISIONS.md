@@ -68,7 +68,9 @@ Schema errors are not also counted as tool failures. Timeout text is not also co
 
 ## Formats
 
-Native JSON/JSONL. OpenAI messages + LangChain intermediate_steps sniff (Phase 2, shipped). OTEL in Phase 3.
+Native JSON/JSONL. OpenAI messages + LangChain intermediate_steps sniff (Phase 2, shipped). Exported OTEL GenAI JSON (Phase 3, shipped): `resourceSpans` / `resource_spans` / `{spans: [...]}`. HTTP-only OTLP stays unknown shape. Native `steps` still win.
+
+`invoke_agent` / `invoke_workflow` / `create_agent` stay as `other` steps for `inspect`. Their duration is the run, so `latency_ms` is omitted. Run `duration_ms` still comes from those timestamps. Do not skip `StepType.other` in the timeout detector.
 
 ## Report
 
@@ -90,4 +92,4 @@ https://github.com/AbdelazizBs/failstep.git
 
 ## Next
 
-Phase 2 is done. Trap corpus is green (81 tests). Phase 3 is OTEL JSON ingest.
+Phase 3 is done. Exported OTEL JSON only. Freeze. Phase 4 is optional LLM leftover, not started.

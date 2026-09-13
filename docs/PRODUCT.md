@@ -100,7 +100,7 @@ JSON field names are a contract. Tests freeze them. A silent "healthy" on garbag
 | "This is whyfail." | They explain Python KeyError from live frames. We explain tool/retry/schema from a dump. |
 | "This is AgentInspect." | They are TypeScript inspect trees. We are a Python diagnosis CLI. |
 | "Needs OpenAI." | `failstep diagnose` works with no provider. Tests prove it. |
-| "Can't parse my dump." | Native schema is V1. OpenAI messages + LangChain `intermediate_steps` sniff in Phase 2. OTEL in Phase 3. Unknown shape = exit 2 with a pointer to TRACE_FORMAT.md. Never pretend success. |
+| "Can't parse my dump." | Native schema is V1. OpenAI messages, LangChain `intermediate_steps`, and exported OTEL GenAI JSON sniff. Unknown shape = exit 2 with a pointer to TRACE_FORMAT.md. Never pretend success. |
 | "Fake metrics." | No confidence field on the Finding model. |
 | "Windows mojibake." | ASCII-safe terminal. No required emoji. |
 | "Secrets leaked to GPT." | Default path never leaves the machine. LLM path redacts first. |

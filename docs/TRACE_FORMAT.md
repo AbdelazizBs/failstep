@@ -47,11 +47,32 @@ JSONL: one step object per line, optional first line `{ "run_id": "...", "status
 1. Native failstep JSON / JSONL / a JSON array of steps
 2. OpenAI dump: `messages[]` with `tool_calls` / `role=tool`
 3. LangChain dump: `intermediate_steps` pairs
-4. Phase 3: OTEL GenAI span list (`gen_ai.operation.name`)
+4. Exported OpenTelemetry GenAI JSON (`gen_ai.operation.name`)
 
 A `messages` array that maps to zero steps is unknown shape (exit 2).
+HTTP-only OTLP (no `gen_ai.*`) is unknown shape (exit 2).
 
-Sniffers never drop errors on the floor. Native `steps` wins if both native and OpenAI keys exist.
+Sniffers never drop errors on the floor. Native `steps` wins if both native and adapter keys exist.
+
+## OpenTelemetry JSON (Phase 3)
+
+Supported dumps, not a live collector:
+
+1. OTLP JSON: `resourceSpans` / `resource_spans` → `scopeSpans` / `scope_spans` → `spans`
+2. Python SDK export: `{ "spans": [ ... ] }` with `context.span_id` and dict `attributes`
+
+Attributes may be OTLP `{key, value: {stringValue|intValue|boolValue}}` or a plain dict. JSON strings are decoded when they look like objects.
+
+| `gen_ai.operation.name` | Step type |
+|---|---|
+| `chat` / `generate_content` / `text_completion` | `llm` |
+| `execute_tool` | `tool` |
+| `retrieval` | `retrieval` |
+| `invoke_agent` / `invoke_workflow` / `create_agent` / other | `other` |
+
+Tool args: `gen_ai.tool.call.arguments`. Tool result: `gen_ai.tool.call.result`. Schema for FS002: `gen_ai.tool.definitions`. Errors: span `status.message`, `exception.message`, or exception events. Timestamps are nanoseconds; child spans get `latency_ms`. Wrapper ops omit `latency_ms` so they cannot dominate FS005; run `duration_ms` still uses their start/end. Spans sort by start time. `parent_id` is kept in step metadata.
+
+This is not universal OTEL support.
 
 ## Stability
 
